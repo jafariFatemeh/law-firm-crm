@@ -10,7 +10,7 @@ const CaseManagement = () => {
     // Fetch cases from the backend
     const fetchCases = async () => {
       try {
-        const response = await axios.get('/api/cases');
+        const response = await axios.get('/cases');
         setCases(response.data);
       } catch (error) {
         console.error('Error fetching cases', error);

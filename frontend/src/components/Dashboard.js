@@ -9,7 +9,7 @@ const Dashboard = () => {
     // Fetch dashboard data from the backend
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/dashboard');
+        const response = await axios.get('/dashboard');
         setData(response.data);
       } catch (error) {
         console.error('Error fetching dashboard data', error);

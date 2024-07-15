@@ -10,7 +10,7 @@ const DocumentManagement = () => {
     // Fetch documents from the backend
     const fetchDocuments = async () => {
       try {
-        const response = await axios.get('/api/documents');
+        const response = await axios.get('/documents');
         setDocuments(response.data);
       } catch (error) {
         console.error('Error fetching documents', error);

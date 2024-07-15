@@ -10,7 +10,7 @@ const ClientManagement = () => {
     // Fetch clients from the backend
     const fetchClients = async () => {
       try {
-        const response = await axios.get('/api/clients');
+        const response = await axios.get('/clients');
         setClients(response.data);
       } catch (error) {
         console.error('Error fetching clients', error);
