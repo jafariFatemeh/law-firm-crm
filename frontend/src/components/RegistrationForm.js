@@ -4,10 +4,15 @@ import axios from '../services/axiosConfig';
 const RegistrationForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
     try {
       const response = await axios.post('/auth', { username, password });
       // Handle successful registration (e.g., display success message, redirect)
@@ -32,6 +37,13 @@ const RegistrationForm = () => {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+       <input
+        type="password"
+        placeholder="Confirm Password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
         required
       />
       <button type="submit">Register</button>
