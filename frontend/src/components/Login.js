@@ -1,38 +1,52 @@
 // src/components/Login.js
 import React, { useState } from 'react';
 import axios from '../services/axiosConfig';
+import './Login.css';
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.post('/login', { username, password });
-      console.log('Login successful', response.data);
+      const response = await axios.post('/auth/login', { username, password });
+      localStorage.setItem('token', response.data.token);
+      onLoginSuccess();
     } catch (error) {
-      console.error('Login failed', error);
+      setError('Invalid username or password');
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>Law Firm CRM</h2>
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleLogin}>Login</button>
+    <div className="Login">
+      <form onSubmit={handleSubmit}>
+        <h1>Login</h1>
+        {error && <p className="error">{error}</p>}
+        <div>
+          <label>Username:</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
 };
 
 export default Login;
+

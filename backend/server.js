@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -13,11 +14,13 @@ const clientRoutes = require('./routes/clients');
 const caseRoutes = require('./routes/cases');
 const documentRoutes = require('./routes/documents');
 const communicationRoutes = require('./routes/communications');
+const authRoutes = require('./routes/auth');
 
 app.use('/api/clients', clientRoutes);
 app.use('/api/cases', caseRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/communications', communicationRoutes);
+app.use('/api/auth', authRoutes);
 
 
 

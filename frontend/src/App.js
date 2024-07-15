@@ -1,29 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import axios from './services/axiosConfig';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App() {
-  const [data, setData] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('/health-check')
-      .then(response => {
-        setData(response.data.message);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
   }, []);
 
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Welcome to Your CRM App</h1>
-        <p>
-          {data ? `Backend Response: ${data}` : "Loading..."}
-        </p>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route path="/login">
+            {isAuthenticated ? <Redirect to="/dashboard" /> : <Login onLoginSuccess={handleLoginSuccess} />}
+          </Route>
+          <Route path="/dashboard">
+            {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}
+          </Route>
+          <Redirect from="/" to="/login" />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
