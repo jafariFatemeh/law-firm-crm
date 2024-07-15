@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: crm-backend
+    env: node
+    plan: free
+    buildCommand: "cd backend && npm install"
+    startCommand: "cd backend && node server.js"
+    envVars:
+      - key: MONGODB_URI
+        value: your-mongodb-uri
