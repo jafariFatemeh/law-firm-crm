@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import axios from '../services/axiosConfig';
 
 const Login = ({ onLoginSuccess }) => {
-  const [username, setUsername] = useState('abc');
-  const [password, setPassword] = useState('abc');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
