@@ -21,8 +21,12 @@ app.use('/api/communications', communicationRoutes);
 const PORT = process.env.PORT || 5000;
 
 // Health check endpoint
-app.get('/health-check', (req, res) => {
-  res.status(200).json({ message: 'Backend is up and running!' });
+app.get('/api/health-check', (req, res) => {
+  res.json({ message: 'Backend is running!' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 const connectDB = async () => {
