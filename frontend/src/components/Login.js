@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import axios from '../services/axiosConfig';
 
 const Login = ({ onLoginSuccess }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('abc');
+  const [password, setPassword] = useState('abc');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/auth/login', { username, password });
+      const response = await axios.post('/login', { username, password });
       localStorage.setItem('token', response.data.token);
       onLoginSuccess();
     } catch (error) {

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import axios from './services/axiosConfig';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import RegistrationForm from './components/RegistrationForm';
 import './App.css';
 
 function App() {
@@ -32,6 +33,9 @@ function App() {
         <Switch>
           <Route path="/login">
             {isAuthenticated ? <Redirect to="/dashboard" /> : <Login onLoginSuccess={handleLoginSuccess} />}
+          </Route>
+          <Route path="/register">
+            <RegistrationForm />
           </Route>
           <Route path="/dashboard">
             {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}
