@@ -1,5 +1,6 @@
 // src/components/Login.js
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from '../services/axiosConfig';
 
 const Login = ({ onLoginSuccess }) => {
@@ -42,6 +43,8 @@ const Login = ({ onLoginSuccess }) => {
           />
         </div>
         <button type="submit">Login</button>
+        {error && <p>{error}</p>}
+      <p>Don't have an account? <Link to="/register">Register here</Link></p>
       </form>
     </div>
   );
