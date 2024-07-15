@@ -28,7 +28,7 @@ app.get('/health-check', (req, res) => {
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
+      //useNewUrlParser: true,
       // useUnifiedTopology: true, // Remove this line
       //useCreateIndex: true,
       //useFindAndModify: false
