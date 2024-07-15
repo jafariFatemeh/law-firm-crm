@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: crm-backend
+    name: backend
     env: node
     plan: free
     buildCommand: "cd backend && npm install"
