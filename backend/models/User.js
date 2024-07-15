@@ -1,5 +1,4 @@
 // backend/models/User.js
-const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
