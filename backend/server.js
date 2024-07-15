@@ -21,8 +21,9 @@ app.use('/api/cases', caseRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/communications', communicationRoutes);
 app.use('/api/auth', authRoutes);
-
-
+app.use('/api/auth', authRoutes);
+app.use('/api/auth/login', authRoutes);
+app.use('/api/auth/register', authRoutes);
 
 // Health check endpoint
 app.get('/api/health-check', (req, res) => {
