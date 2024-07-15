@@ -7,4 +7,4 @@ services:
     startCommand: "cd backend && node server.js"
     envVars:
       - key: MONGODB_URI
-        value: your-mongodb-uri
+        value: mongodb+srv://fatemehjafari020:iamparisa@backend.jckf0ya.mongodb.net/?retryWrites=true&w=majority&appName=backend
