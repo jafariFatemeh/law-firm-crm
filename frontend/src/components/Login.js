@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from '../services/axiosConfig';
-import './Login.css';
 
 function Login({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
