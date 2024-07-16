@@ -1,9 +1,8 @@
 // backend/server.js
 const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const connectDB = require('./config/db');
+require('./config/dotenv'); 
 const cors = require('cors');
-require('dotenv').config();
 
 const app = express();
 connectDB();
