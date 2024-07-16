@@ -1,54 +1,39 @@
 // src/components/Login.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import axios from '../services/axiosConfig';
+import './Login.css';
 
-const Login = ({ onLoginSuccess }) => {
+function Login({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('api/auth/login', { username, password });
+      const response = await axios.post('/api/auth/login', { username, password });
       localStorage.setItem('token', response.data.token);
       onLoginSuccess();
-    } catch (error) {
+    } catch (err) {
       setError('Invalid username or password');
     }
   };
 
   return (
-    <div className="Login">
+    <div className="login-container">
+      <h2>Login</h2>
+      {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit}>
-        <h1>Login</h1>
-        {error && <p className="error">{error}</p>}
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button type="submit">Login</button>
-        {error && <p>{error}</p>}
-      <p>Don't have an account? <Link to="/register">Register here</Link></p>
       </form>
+      <button onClick={() => history.push('/register')}>Register</button>
     </div>
   );
-};
+}
 
 export default Login;
 
