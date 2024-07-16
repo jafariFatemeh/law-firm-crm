@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from '../services/axiosConfig';
+import './Login.css';
 
 function Login({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
@@ -12,7 +13,7 @@ function Login({ onLoginSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/auth/login', { username, password });
+      const response = await axios.post('/login', { username, password });
       localStorage.setItem('token', response.data.token);
       onLoginSuccess();
     } catch (err) {
