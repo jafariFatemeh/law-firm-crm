@@ -1,6 +1,7 @@
 // src/pages/Dashboard.js
 import React, { useEffect, useState } from 'react';
 import axios from '../services/axiosConfig';
+import './Dashboard.css';
 
 const Dashboard = () => {
   const [data, setData] = useState({});
