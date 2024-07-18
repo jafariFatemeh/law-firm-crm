@@ -11,6 +11,7 @@ const communicationRoutes = require('./routes/communications');
 const dashboardRoutes = require('./routes/dashboard');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
+const helmet = require('helmet');
 
 dotenv.config();
 
