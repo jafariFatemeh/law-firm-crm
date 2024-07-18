@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from '../services/axiosConfig';
-import './RegistrationForm.css';
+
 
 function RegistrationForm() {
   const [username, setUsername] = useState('');
