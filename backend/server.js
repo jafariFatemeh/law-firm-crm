@@ -8,7 +8,7 @@ const clientRoutes = require('./routes/clients');
 const caseRoutes = require('./routes/cases');
 const documentRoutes = require('./routes/documents');
 const communicationRoutes = require('./routes/communications');
-const dashboardRoutes = require('./routes/dashboard'); // Add this line
+const dashboardRoutes = require('./routes/dashboard');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 
@@ -43,7 +43,7 @@ app.use('/api/clients', clientRoutes);
 app.use('/api/cases', caseRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/communications', communicationRoutes);
-app.use('/api/dashboard', dashboardRoutes); // Add this line
+app.use('/api/dashboard', dashboardRoutes);
 
 app.get('/health-check', (req, res) => {
   res.send({ message: 'Backend is running' });
@@ -51,7 +51,6 @@ app.get('/health-check', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  // Simulate real-time updates
   setInterval(() => {
     const newData = {
       clients: Math.floor(Math.random() * 100),
@@ -61,6 +60,11 @@ io.on('connection', (socket) => {
     };
     socket.emit('updateData', newData);
   }, 5000);
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 server.listen(PORT, () => {

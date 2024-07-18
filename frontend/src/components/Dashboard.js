@@ -12,6 +12,7 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get('/api/dashboard');
+      console.log('Dashboard data:', response.data); // Add this line for debugging
       setData(response.data);
       setChartData({
         labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -95,5 +96,6 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
 
 
