@@ -40,7 +40,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData();
-    const socket = io(process.env.REACT_APP_BACKEND_URL);
+    const socket = io(process.env.REACT_APP_API_URL);
     socket.on('updateData', (newData) => {
       setData(newData);
       setChartData({
