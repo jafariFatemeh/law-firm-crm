@@ -8,7 +8,7 @@ const cors = require('cors');
 const app = express();
 connectDB();
 
-app.use(bodyParser.json());
+app.use(express.json());
 const PORT = process.env.PORT || 5000;
 app.use(cors());
 
@@ -25,6 +25,10 @@ app.use('/api/documents', documentRoutes);
 app.use('/api/communications', communicationRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/auth', authRoutes);
+
+app.get('/', (req, res) => {
+  res.send('API is running...');
+});
 
 // Health check endpoint
 app.get('/api/health-check', (req, res) => {
