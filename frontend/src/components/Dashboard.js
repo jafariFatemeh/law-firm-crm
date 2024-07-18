@@ -4,13 +4,12 @@ import axios from '../services/axiosConfig';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ clients: 0, cases: 0, documents: 0, communications: 0 });
 
   useEffect(() => {
-    // Fetch dashboard data from the backend
     const fetchData = async () => {
       try {
-        const response = await axios.get('/dashboard');
+        const response = await axios.get('/api/dashboard');
         setData(response.data);
       } catch (error) {
         console.error('Error fetching dashboard data', error);
@@ -22,15 +21,27 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <h2>Dashboard</h2>
-      {/* Display key metrics */}
       <div className="metrics">
-        <div className="metric">Clients: {data.clients}</div>
-        <div className="metric">Cases: {data.cases}</div>
-        <div className="metric">Documents: {data.documents}</div>
-        <div className="metric">Communications: {data.communications}</div>
+        <div className="metric">
+          <h3>Clients</h3>
+          <p>{data.clients}</p>
+        </div>
+        <div className="metric">
+          <h3>Cases</h3>
+          <p>{data.cases}</p>
+        </div>
+        <div className="metric">
+          <h3>Documents</h3>
+          <p>{data.documents}</p>
+        </div>
+        <div className="metric">
+          <h3>Communications</h3>
+          <p>{data.communications}</p>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Dashboard;
+

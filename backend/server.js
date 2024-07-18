@@ -8,6 +8,7 @@ const clientRoutes = require('./routes/clients');
 const caseRoutes = require('./routes/cases');
 const documentRoutes = require('./routes/documents');
 const communicationRoutes = require('./routes/communications');
+const dashboardRoutes = require('./routes/dashboard');
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use('/api/clients', clientRoutes);
 app.use('/api/cases', caseRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/communications', communicationRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.get('/health-check', (req, res) => {
   res.send({ message: 'Backend is running' });
