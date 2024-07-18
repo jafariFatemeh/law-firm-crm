@@ -11,10 +11,12 @@ const Login = ({ onLoginSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(`Logging in user: ${username}`);
       const response = await axios.post('/login', { username, password });
       localStorage.setItem('token', response.data.token);
       onLoginSuccess();
     } catch (error) {
+      console.error(`Login failed: ${error.message}`);
       setError('Invalid username or password');
     }
   };
@@ -46,4 +48,3 @@ const Login = ({ onLoginSuccess }) => {
 };
 
 export default Login;
-

@@ -9,9 +9,11 @@ const RegistrationForm = ({ onRegistrationSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(`Registering user: ${username}`);
       await axios.post('/register', { username, password });
       onRegistrationSuccess();
     } catch (error) {
+      console.error(`Registration failed: ${error.message}`);
       setError('Registration failed');
     }
   };
