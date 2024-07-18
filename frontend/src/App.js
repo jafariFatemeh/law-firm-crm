@@ -23,6 +23,10 @@ function App() {
     setIsAuthenticated(true);
   };
 
+  const handleRegistrationSuccess = () => {
+    setIsAuthenticated(false);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -35,7 +39,7 @@ function App() {
             {isAuthenticated ? <Redirect to="/dashboard" /> : <Login onLoginSuccess={handleLoginSuccess} />}
           </Route>
           <Route path="/register">
-            <RegistrationForm onRegisterSuccess={handleLoginSuccess} />
+            {isAuthenticated ? <Redirect to="/dashboard" /> : <RegistrationForm onRegistrationSuccess={handleRegistrationSuccess} />}
           </Route>
           <Route path="/dashboard">
             {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}
