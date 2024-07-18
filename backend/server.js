@@ -1,14 +1,17 @@
 // backend/server.js
 const express = require('express');
+const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
-require('./config/dotenv'); 
+require('dotenv').config();
 const cors = require('cors');
 
 const app = express();
 connectDB();
+
+app.use(bodyParser.json());
 const PORT = process.env.PORT || 5000;
 app.use(cors());
-app.use(express.json());
+
 
 const clientRoutes = require('./routes/clients');
 const caseRoutes = require('./routes/cases');
