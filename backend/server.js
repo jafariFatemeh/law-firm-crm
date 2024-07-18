@@ -35,6 +35,7 @@ mongoose.connect(MONGODB_URI, {
   console.error('MongoDB connection error:', error);
 });
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 

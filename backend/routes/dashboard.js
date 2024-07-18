@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  // Dummy data for dashboard
+  // Example data, replace with actual data fetching logic
   const data = {
-    clients: 50,
-    cases: 75,
-    documents: 150,
-    communications: 200
+    clients: 20,
+    cases: 30,
+    documents: 40,
+    communications: 50,
   };
-  res.send(data);
+  res.json(data);
 });
 
 module.exports = router;
