@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-// Mock data for demonstration purposes
 router.get('/', (req, res) => {
-  res.json({
-    clients: 10,
-    cases: 5,
-    documents: 15,
-    communications: 20
-  });
+  // Dummy data for dashboard
+  const data = {
+    clients: 50,
+    cases: 75,
+    documents: 150,
+    communications: 200
+  };
+  res.send(data);
 });
 
 module.exports = router;
