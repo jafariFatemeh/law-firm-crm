@@ -1,40 +1,39 @@
 // backend/server.js
 const express = require('express');
-const bodyParser = require('body-parser');
-const connectDB = require('./config/db');
-require('dotenv').config();
+const mongoose = require('mongoose');
 const cors = require('cors');
-
-const app = express();
-connectDB();
-
-app.use(bodyParser.json());
-const PORT = process.env.PORT || 5000;
-app.use(cors());
-
-
-const clientRoutes = require('./routes/clients');
-const caseRoutes = require('./routes/cases');
-const documentRoutes = require('./routes/documents');
-const communicationRoutes = require('./routes/communications');
+const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 
-app.use('/api/clients', clientRoutes);
-app.use('/api/cases', caseRoutes);
-app.use('/api/documents', documentRoutes);
-app.use('/api/communications', communicationRoutes);
-app.use('/api/auth', authRoutes);
+dotenv.config();
+
+const app = express();
+
+const PORT = process.env.PORT || 5000;
+const MONGODB_URI = process.env.MONGODB_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
+
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((error) => {
+  console.error('MongoDB connection error:', error);
+});
+
+app.use(cors());
+app.use(express.json());
+
 app.use('/api/auth', authRoutes);
 
-// Health check endpoint
-app.get('/api/health-check', (req, res) => {
-  res.json({ message: 'Backend is running!' });
+app.get('/health-check', (req, res) => {
+  res.send({ message: 'Backend is running' });
 });
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
 
 
 
