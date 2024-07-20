@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     documents: 40,
     communications: 50,
   };
-  res.json(data);
+  res.send(data);
 });
 
 module.exports = router;
