@@ -17,7 +17,7 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get('/api/dashboard');
-      console.log('Dashboard data:', response.data); // Add this line for debugging
+      console.log('Dashboard data:', response.data); // Debugging log
       setData(response.data);
       updateChartData(response.data);
     } catch (error) {
@@ -65,12 +65,13 @@ const Dashboard = () => {
     fetchData();
     const socket = io(process.env.REACT_APP_API_URL);
     socket.on('updateData', (newData) => {
-      console.log('Socket data:', newData); // Add this line for debugging
+      console.log('Socket data:', newData); // Debugging log
       setData(newData);
       updateChartData(newData);
     });
+
     return () => socket.disconnect();
-  }, []);
+  }, [fetchData]);
 
   return (
     <div className="dashboard-container">
