@@ -98,12 +98,18 @@ const Dashboard = () => {
       <div className="chart">
         <Line data={chartData} />
       </div>
+      <div className="recent-activities">
+        <h3>Recent Activities</h3>
+        <ul>
+          <li>Client A added a new case</li>
+          <li>Document B was updated</li>
+          <li>Communication C received a response</li>
+        </ul>
+      </div>
     </div>
   );
 };
 
 export default Dashboard;
-
-
 
 
