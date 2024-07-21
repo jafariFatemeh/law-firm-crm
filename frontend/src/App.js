@@ -1,17 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import axios from './services/axiosConfig';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import Dashboard from './components/Dashboard';
+import axios from './services/axiosConfig';
 import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 import RegistrationForm from './components/RegistrationForm';
 import './App.css';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
+  }, []);
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Router>
