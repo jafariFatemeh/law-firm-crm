@@ -88,7 +88,12 @@ const Dashboard = () => {
       updateChartData(newData);
     });
 
-    return () => socket.disconnect();
+    // Cleanup function to close the WebSocket connection when the component unmounts
+    return () => {
+      if (socket.connected) {
+        socket.disconnect();
+      }
+    };
   }, [fetchData, updateChartData]);
 
   if (loading) {
@@ -129,6 +134,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
 
 

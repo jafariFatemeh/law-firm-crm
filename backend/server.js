@@ -42,7 +42,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
-      connectSrc: ["'self'", "ws://localhost:5000"],
+      connectSrc: ["'self'", "wss://backend-0vwz.onrender.com"],
       // Add other directives as needed
     },
   },
@@ -90,6 +90,3 @@ app.use((err, req, res, next) => {
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-
-
