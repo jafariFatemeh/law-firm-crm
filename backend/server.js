@@ -36,7 +36,17 @@ mongoose.connect(MONGODB_URI, {
   console.error('MongoDB connection error:', error);
 });
 
-app.use(helmet());
+// Configure helmet with a strict CSP policy
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      connectSrc: ["'self'", "ws://localhost:5000"],
+      // Add other directives as needed
+    },
+  },
+}));
 app.use(cors());
 app.use(express.json());
 
@@ -53,7 +63,8 @@ app.get('/health-check', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  setInterval(() => {
+
+  const sendNewData = () => {
     const newData = {
       clients: Math.floor(Math.random() * 100),
       cases: Math.floor(Math.random() * 100),
@@ -61,10 +72,13 @@ io.on('connection', (socket) => {
       communications: Math.floor(Math.random() * 100),
     };
     socket.emit('updateData', newData);
-  }, 5000);
+  };
+
+  const intervalId = setInterval(sendNewData, 5000);
 
   socket.on('disconnect', () => {
     console.log('a user disconnected');
+    clearInterval(intervalId); // Clear the interval on disconnect
   });
 });
 
@@ -76,7 +90,6 @@ app.use((err, req, res, next) => {
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
 
 
 
