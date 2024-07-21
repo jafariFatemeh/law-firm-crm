@@ -13,8 +13,6 @@ const Dashboard = () => {
     communications: 0,
   });
   const [chartData, setChartData] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const updateChartData = useCallback((data) => {
     setChartData({
@@ -53,34 +51,19 @@ const Dashboard = () => {
   }, []);
 
   const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
     try {
       const response = await axios.get('/api/dashboard');
       console.log('Dashboard data:', response.data); // Debugging log
       setData(response.data);
       updateChartData(response.data);
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching dashboard data', error);
-      setError('Failed to load dashboard data.');
-      setLoading(false);
     }
   }, [updateChartData]);
 
   useEffect(() => {
     fetchData();
-    const socket = io(process.env.REACT_APP_API_URL, {
-      transports: ['websocket'], // Ensure WebSocket transport is used
-    });
-
-    socket.on('connect', () => {
-      console.log('WebSocket connected');
-    });
-
-    socket.on('disconnect', () => {
-      console.log('WebSocket disconnected');
-    });
+    const socket = io(process.env.REACT_APP_API_URL);
 
     socket.on('updateData', (newData) => {
       console.log('Socket data:', newData); // Debugging log
@@ -88,21 +71,8 @@ const Dashboard = () => {
       updateChartData(newData);
     });
 
-    // Cleanup function to close the WebSocket connection when the component unmounts
-    return () => {
-      if (socket.connected) {
-        socket.disconnect();
-      }
-    };
+    return () => socket.disconnect();
   }, [fetchData, updateChartData]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   return (
     <div className="dashboard-container">
