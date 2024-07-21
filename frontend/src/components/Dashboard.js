@@ -13,6 +13,8 @@ const Dashboard = () => {
     communications: 0,
   });
   const [chartData, setChartData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const updateChartData = useCallback((data) => {
     setChartData({
@@ -51,13 +53,18 @@ const Dashboard = () => {
   }, []);
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await axios.get('/api/dashboard');
       console.log('Dashboard data:', response.data); // Debugging log
       setData(response.data);
       updateChartData(response.data);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching dashboard data', error);
+      setError('Failed to load dashboard data.');
+      setLoading(false);
     }
   }, [updateChartData]);
 
@@ -72,6 +79,14 @@ const Dashboard = () => {
 
     return () => socket.disconnect();
   }, [fetchData, updateChartData]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="dashboard-container">
@@ -98,18 +113,11 @@ const Dashboard = () => {
       <div className="chart">
         <Line data={chartData} />
       </div>
-      <div className="recent-activities">
-        <h3>Recent Activities</h3>
-        <ul>
-          <li>Client A added a new case</li>
-          <li>Document B was updated</li>
-          <li>Communication C received a response</li>
-        </ul>
-      </div>
     </div>
   );
 };
 
 export default Dashboard;
+
 
 
