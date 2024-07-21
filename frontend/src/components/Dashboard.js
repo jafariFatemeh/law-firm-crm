@@ -70,7 +70,18 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData();
-    const socket = io(process.env.REACT_APP_API_URL);
+    const socket = io(process.env.REACT_APP_API_URL, {
+      transports: ['websocket'], // Ensure WebSocket transport is used
+    });
+
+    socket.on('connect', () => {
+      console.log('WebSocket connected');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('WebSocket disconnected');
+    });
+
     socket.on('updateData', (newData) => {
       console.log('Socket data:', newData); // Debugging log
       setData(newData);

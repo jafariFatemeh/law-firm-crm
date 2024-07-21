@@ -62,6 +62,10 @@ io.on('connection', (socket) => {
     };
     socket.emit('updateData', newData);
   }, 5000);
+
+  socket.on('disconnect', () => {
+    console.log('a user disconnected');
+  });
 });
 
 app.use((err, req, res, next) => {
