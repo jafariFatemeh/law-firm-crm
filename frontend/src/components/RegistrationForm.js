@@ -1,40 +1,37 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import axios from '../services/axiosConfig';
-import './Loginreg.css';
+import './RegistrationForm.css';
 
-function RegistrationForm() {
-  const [username, setUsername] = useState('');
+const RegistrationForm = () => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/auth/register', { username, password });
-      setSuccess('Registration successful! Redirecting to login...');
-      setTimeout(() => {
-        history.push('/login');
-      }, 2000);
-    } catch (err) {
-      setError('Registration failed');
+      await axios.post('/api/auth/register', { email, password });
+      alert('Registration successful! Please log in.');
+    } catch (error) {
+      console.error('Registration error:', error);
     }
   };
 
   return (
     <div className="registration-container">
       <h2>Register</h2>
-      {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>}
       <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <div className="form-group">
+          <label>Email:</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </div>
+        <div className="form-group">
+          <label>Password:</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </div>
         <button type="submit">Register</button>
       </form>
     </div>
   );
-}
+};
 
 export default RegistrationForm;
