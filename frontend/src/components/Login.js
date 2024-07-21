@@ -1,7 +1,7 @@
 // src/components/Login.js
 import React, { useState } from 'react';
 import axios from '../services/axiosConfig';
-import './Login.css';
+import './Loginreg.css';
 
 const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
