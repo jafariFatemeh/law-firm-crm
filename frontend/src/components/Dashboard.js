@@ -1,5 +1,5 @@
 // src/pages/Dashboard.js
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from '../services/axiosConfig';
 import { Line } from 'react-chartjs-2';
 import io from 'socket.io-client';
@@ -7,10 +7,10 @@ import './Dashboard.css';
 
 const Dashboard = () => {
   const [data, setData] = useState({
-    clients: 0,
-    cases: 0,
-    documents: 0,
-    communications: 0,
+    clients: [0, 0, 0, 0, 0, 0],
+    cases: [0, 0, 0, 0, 0, 0],
+    documents: [0, 0, 0, 0, 0, 0],
+    communications: [0, 0, 0, 0, 0, 0],
   });
   const [chartData, setChartData] = useState({});
 
@@ -64,7 +64,6 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData();
     const socket = io(process.env.REACT_APP_API_URL);
-
     socket.on('updateData', (newData) => {
       console.log('Socket data:', newData); // Debugging log
       setData(newData);
@@ -81,28 +80,27 @@ const Dashboard = () => {
       <div className="metrics">
         <div className="metric">
           <h3>Clients</h3>
-          <p>{data.clients}</p>
+          <p>{data.clients.reduce((a, b) => a + b, 0)}</p>
         </div>
         <div className="metric">
           <h3>Cases</h3>
-          <p>{data.cases}</p>
+          <p>{data.cases.reduce((a, b) => a + b, 0)}</p>
         </div>
         <div className="metric">
           <h3>Documents</h3>
-          <p>{data.documents}</p>
+          <p>{data.documents.reduce((a, b) => a + b, 0)}</p>
         </div>
         <div className="metric">
           <h3>Communications</h3>
-          <p>{data.communications}</p>
+          <p>{data.communications.reduce((a, b) => a + b, 0)}</p>
         </div>
       </div>
       <div className="chart">
-        <Line data={chartData} />
+        <Line data={chartData} options={{ responsive: true }} />
       </div>
     </div>
   );
 };
 
 export default Dashboard;
-
 
