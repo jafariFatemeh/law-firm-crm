@@ -3,7 +3,19 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from '../services/axiosConfig';
 import { Line } from 'react-chartjs-2';
 import io from 'socket.io-client';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import './Dashboard.css';
+
+// Register the necessary components of Chart.js
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard = () => {
   const [data, setData] = useState({
@@ -70,7 +82,9 @@ const Dashboard = () => {
       updateChartData(newData);
     });
 
-    return () => socket.disconnect();
+    return () => {
+      socket.disconnect();
+    };
   }, [fetchData, updateChartData]);
 
   return (
@@ -103,4 +117,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
