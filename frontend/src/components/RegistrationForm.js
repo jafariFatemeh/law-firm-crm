@@ -1,35 +1,40 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from '../services/axiosConfig';
 import './Loginreg.css';
 
 const RegistrationForm = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('/auth/register', { name, email, password });
+    try {
+      await axios.post('/api/auth/register', { username, password });
+      setSuccess('Registration successful! Redirecting to login...');
+      setTimeout(() => {
+        history.push('/login');
+      }, 2000);
+    } catch (err) {
+      setError('Registration failed');
+    }
   };
 
   return (
-    <div className="register">
+    <div className="registration">
       <h2>Register</h2>
+      {error && <p className="error">{error}</p>}
+      {success && <p className="success">{success}</p>}
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
+      <div>
+          <label>Username:</label>
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div>
@@ -44,6 +49,6 @@ const RegistrationForm = () => {
       </form>
     </div>
   );
-};
+}
 
 export default RegistrationForm;

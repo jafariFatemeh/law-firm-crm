@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect, Link } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import CaseManagement from './components/CaseManagement';
 import ClientManagement from './components/ClientManagement';
@@ -10,32 +10,68 @@ import RegistrationForm from './components/RegistrationForm';
 import './App.css';
 
 const App = () => {
-  const [token, setToken] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  if (!token) {
-    return <Login setToken={setToken} />;
-  }
+  const handleLoginSuccess = (token) => {
+    setIsAuthenticated(true);
+    localStorage.setItem('token', token); // Save token in local storage for persistence
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('token'); // Clear token from local storage
+  };
 
   return (
     <Router>
-      <div className="app">
-        <nav>
-          <ul>
-            <li><a href="/">Dashboard</a></li>
-            <li><a href="/cases">Cases</a></li>
-            <li><a href="/clients">Clients</a></li>
-            <li><a href="/documents">Documents</a></li>
-            <li><a href="/communications">Communications</a></li>
-          </ul>
-        </nav>
-        <Switch>
-          <Route path="/" exact component={Dashboard} />
-          <Route path="/cases" component={CaseManagement} />
-          <Route path="/clients" component={ClientManagement} />
-          <Route path="/documents" component={DocumentManagement} />
-          <Route path="/communications" component={CommunicationTools} />
-          <Route path="/register" component={RegistrationForm} />
-        </Switch>
+      <div className="App">
+        <header className="header">
+          <div className="logo">Your Logo</div>
+          <nav>
+            <Link to="/home">Home</Link>
+            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/profile">Profile</Link>
+            {isAuthenticated && <a href="/" onClick={handleLogout}>Logout</a>}
+          </nav>
+        </header>
+        <div className="main-content">
+          <aside className="sidebar">
+            <Link to="/clients">Clients</Link>
+            <Link to="/cases">Cases</Link>
+            <Link to="/documents">Documents</Link>
+            <Link to="/communications">Communications</Link>
+          </aside>
+          <div className="content">
+            <Switch>
+              <Route path="/login">
+                {isAuthenticated ? <Redirect to="/dashboard" /> : <Login onLoginSuccess={handleLoginSuccess} />}
+              </Route>
+              <Route path="/register">
+                {isAuthenticated ? <Redirect to="/dashboard" /> : <RegistrationForm />}
+              </Route>
+              <Route path="/dashboard">
+                {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}
+              </Route>
+              <Route path="/cases">
+                {isAuthenticated ? <CaseManagement /> : <Redirect to="/login" />}
+              </Route>
+              <Route path="/clients">
+                {isAuthenticated ? <ClientManagement /> : <Redirect to="/login" />}
+              </Route>
+              <Route path="/documents">
+                {isAuthenticated ? <DocumentManagement /> : <Redirect to="/login" />}
+              </Route>
+              <Route path="/communications">
+                {isAuthenticated ? <CommunicationTools /> : <Redirect to="/login" />}
+              </Route>
+              <Redirect from="/" to="/login" />
+            </Switch>
+          </div>
+        </div>
+        <footer className="footer">
+          <p>© 2023 Your Company. All rights reserved.</p>
+          <p><a href="/contact">Contact Support</a></p>
+        </footer>
       </div>
     </Router>
   );

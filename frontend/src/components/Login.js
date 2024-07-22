@@ -1,28 +1,31 @@
 // src/components/Login.js
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from '../services/axiosConfig';
 import './Loginreg.css';
 
 const Login = ({ setToken }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await axios.post('/auth/login', { email, password });
-    setToken(res.data.token);
+      const res = await axios.post('/api/auth/login', { username, password });
+      setToken(res.data.token);
   };
 
   return (
     <div className="login">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
+      <div>
+          <label>Username:</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div>
@@ -35,8 +38,9 @@ const Login = ({ setToken }) => {
         </div>
         <button type="submit">Login</button>
       </form>
+      <button onClick={() => history.push('/register')}>Register</button>
     </div>
   );
-};
+}
 
 export default Login;
