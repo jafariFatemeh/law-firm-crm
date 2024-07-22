@@ -1,9 +1,13 @@
 // backend/routes/cases.js
 const express = require('express');
 const router = express.Router();
-const { getAllCases, addCase } = require('../controllers/caseController');
+const caseController = require('../controllers/caseController');
 
-router.get('/', getAllCases);
-router.post('/', addCase);
+// Define routes and attach controller methods
+router.get('/', caseController.getCases);
+router.post('/', caseController.createCase);
+router.get('/:id', caseController.getCaseById);
+router.put('/:id', caseController.updateCase);
+router.delete('/:id', caseController.deleteCase);
 
 module.exports = router;
