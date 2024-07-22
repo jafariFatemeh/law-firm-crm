@@ -1,21 +1,31 @@
 // backend/controllers/documentController.js
 const Document = require('../models/Document');
 
-exports.getDocuments = async (req, res) => {
+exports.getAllDocuments = async (req, res) => {
   try {
-    const documents = await Document.find().populate('caseId');
+    const documents = await Document.find();
     res.json(documents);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching documents' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
   }
 };
 
-exports.createDocument = async (req, res) => {
+exports.addDocument = async (req, res) => {
+  const { title, content, client } = req.body;
+
   try {
-    const newDocument = new Document(req.body);
-    const savedDocument = await newDocument.save();
-    res.json(savedDocument);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating document' });
+    const newDocument = new Document({
+      title,
+      content,
+      client
+    });
+
+    const document = await newDocument.save();
+
+    res.json(document);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
   }
 };

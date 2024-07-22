@@ -1,21 +1,33 @@
 // backend/controllers/clientController.js
 const Client = require('../models/Client');
 
-exports.getClients = async (req, res) => {
+exports.getAllClients = async (req, res) => {
   try {
     const clients = await Client.find();
     res.json(clients);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching clients' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
   }
 };
 
-exports.createClient = async (req, res) => {
+exports.addClient = async (req, res) => {
+  const { name, email, phone, address } = req.body;
+
   try {
-    const newClient = new Client(req.body);
-    const savedClient = await newClient.save();
-    res.json(savedClient);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating client' });
+    const newClient = new Client({
+      name,
+      email,
+      phone,
+      address
+    });
+
+    const client = await newClient.save();
+
+    res.json(client);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
   }
 };
+

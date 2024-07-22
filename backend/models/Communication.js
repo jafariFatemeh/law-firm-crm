@@ -1,8 +1,24 @@
 // backend/models/Communication.js
 const mongoose = require('mongoose');
-const communicationSchema = new mongoose.Schema({
-  message: { type: String, required: true },
-  clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
-  date: { type: Date, default: Date.now },
+
+const CommunicationSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    required: true
+  },
+  content: {
+    type: String,
+    required: true
+  },
+  client: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Client',
+    required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  }
 });
-module.exports = mongoose.model('Communication', communicationSchema);
+
+module.exports = mongoose.model('Communication', CommunicationSchema);

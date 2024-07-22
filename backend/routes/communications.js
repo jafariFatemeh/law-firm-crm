@@ -1,9 +1,9 @@
 // backend/routes/communications.js
 const express = require('express');
 const router = express.Router();
-const communicationController = require('../controllers/communicationController');
+const { getAllCommunications, addCommunication } = require('../controllers/communicationController');
 
-router.get('/', communicationController.getCommunications);
-router.post('/', communicationController.createCommunication);
+router.get('/', getAllCommunications);
+router.post('/', addCommunication);
 
 module.exports = router;

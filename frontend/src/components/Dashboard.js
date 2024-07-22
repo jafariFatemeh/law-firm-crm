@@ -1,116 +1,40 @@
 // src/pages/Dashboard.js
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from '../services/axiosConfig';
-import { Line } from 'react-chartjs-2';
-import io from 'socket.io-client';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import './Dashboard.css';
 
-// Register the necessary components of Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
 const Dashboard = () => {
-  const [data, setData] = useState({
-    clients: [0, 0, 0, 0, 0, 0],
-    cases: [0, 0, 0, 0, 0, 0],
-    documents: [0, 0, 0, 0, 0, 0],
-    communications: [0, 0, 0, 0, 0, 0],
-  });
-  const [chartData, setChartData] = useState({});
-
-  const updateChartData = useCallback((data) => {
-    setChartData({
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-      datasets: [
-        {
-          label: 'Clients',
-          data: data.clients || [0, 0, 0, 0, 0, 0],
-          fill: false,
-          backgroundColor: 'rgba(75,192,192,1)',
-          borderColor: 'rgba(75,192,192,1)',
-        },
-        {
-          label: 'Cases',
-          data: data.cases || [0, 0, 0, 0, 0, 0],
-          fill: false,
-          backgroundColor: 'rgba(153,102,255,1)',
-          borderColor: 'rgba(153,102,255,1)',
-        },
-        {
-          label: 'Documents',
-          data: data.documents || [0, 0, 0, 0, 0, 0],
-          fill: false,
-          backgroundColor: 'rgba(255,159,64,1)',
-          borderColor: 'rgba(255,159,64,1)',
-        },
-        {
-          label: 'Communications',
-          data: data.communications || [0, 0, 0, 0, 0, 0],
-          fill: false,
-          backgroundColor: 'rgba(255,205,86,1)',
-          borderColor: 'rgba(255,205,86,1)',
-        },
-      ],
-    });
-  }, []);
-
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await axios.get('/api/dashboard');
-      console.log('Dashboard data:', response.data); // Debugging log
-      setData(response.data);
-      updateChartData(response.data);
-    } catch (error) {
-      console.error('Error fetching dashboard data', error);
-    }
-  }, [updateChartData]);
+  const [dashboardData, setDashboardData] = useState({});
 
   useEffect(() => {
-    fetchData();
-    const socket = io(process.env.REACT_APP_API_URL);
-    socket.on('updateData', (newData) => {
-      console.log('Socket data:', newData); // Debugging log
-      setData(newData);
-      updateChartData(newData);
-    });
-
-    return () => {
-      socket.disconnect();
+    const fetchDashboardData = async () => {
+      const res = await axios.get('/dashboard');
+      setDashboardData(res.data);
     };
-  }, [fetchData, updateChartData]);
+
+    fetchDashboardData();
+  }, []);
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard">
       <h2>Dashboard</h2>
-      <button onClick={fetchData} className="refresh-button">Refresh Data</button>
-      <div className="metrics">
-        <div className="metric">
-          <h3>Clients</h3>
-          <p>{data.clients.reduce((a, b) => a + b, 0)}</p>
-        </div>
-        <div className="metric">
+      <div className="dashboard-stats">
+        <div className="stat-item">
           <h3>Cases</h3>
-          <p>{data.cases.reduce((a, b) => a + b, 0)}</p>
+          <p>{dashboardData.cases}</p>
         </div>
-        <div className="metric">
-          <h3>Documents</h3>
-          <p>{data.documents.reduce((a, b) => a + b, 0)}</p>
+        <div className="stat-item">
+          <h3>Clients</h3>
+          <p>{dashboardData.clients}</p>
         </div>
-        <div className="metric">
+        <div className="stat-item">
           <h3>Communications</h3>
-          <p>{data.communications.reduce((a, b) => a + b, 0)}</p>
+          <p>{dashboardData.communications}</p>
         </div>
-      </div>
-      <div className="chart">
-        <Line data={chartData} options={{ responsive: true }} />
+        <div className="stat-item">
+          <h3>Documents</h3>
+          <p>{dashboardData.documents}</p>
+        </div>
       </div>
     </div>
   );

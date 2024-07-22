@@ -1,21 +1,32 @@
 // backend/controllers/communicationController.js
 const Communication = require('../models/Communication');
 
-exports.getCommunications = async (req, res) => {
+exports.getAllCommunications = async (req, res) => {
   try {
-    const communications = await Communication.find().populate('clientId');
+    const communications = await Communication.find();
     res.json(communications);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching communications' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
   }
 };
 
-exports.createCommunication = async (req, res) => {
+exports.addCommunication = async (req, res) => {
+  const { type, content, client, date } = req.body;
+
   try {
-    const newCommunication = new Communication(req.body);
-    const savedCommunication = await newCommunication.save();
-    res.json(savedCommunication);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating communication' });
+    const newCommunication = new Communication({
+      type,
+      content,
+      client,
+      date
+    });
+
+    const communication = await newCommunication.save();
+
+    res.json(communication);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
   }
 };

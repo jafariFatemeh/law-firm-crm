@@ -1,8 +1,24 @@
 // backend/models/Document.js
 const mongoose = require('mongoose');
-const documentSchema = new mongoose.Schema({
-  documentName: { type: String, required: true },
-  caseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Case', required: true },
-  filePath: { type: String, required: true },
+
+const DocumentSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  content: {
+    type: String,
+    required: true
+  },
+  client: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Client',
+    required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  }
 });
-module.exports = mongoose.model('Document', documentSchema);
+
+module.exports = mongoose.model('Document', DocumentSchema);

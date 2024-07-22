@@ -1,9 +1,9 @@
 // backend/routes/clients.js
 const express = require('express');
 const router = express.Router();
-const clientController = require('../controllers/clientController');
+const { getAllClients, addClient } = require('../controllers/clientController');
 
-router.get('/', clientController.getClients);
-router.post('/', clientController.createClient);
+router.get('/', getAllClients);
+router.post('/', addClient);
 
 module.exports = router;
