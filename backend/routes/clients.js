@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { getAllClients, addClient } = require('../controllers/clientController');
 
-router.get('/', clientController.getAllClients);
-router.post('/', clientController.addClient);
+router.get('/', getAllClients);
+router.post('/', addClient);
 
 module.exports = router;
