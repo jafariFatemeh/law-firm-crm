@@ -35,8 +35,8 @@ const Login = ({ onLoginSuccess }) => {
           <label>Password</label>
           <input type="password" name="password" value={password} onChange={onChange} required />
         </div>
-        <button type="submit">Login</button>
-        <button> <a href="/register">Register</a> </button>
+        <button className='log' type="submit">Login</button>
+        <button className='reg'> <a href="/register">Register</a> </button>
       </form>
     </div>
   );

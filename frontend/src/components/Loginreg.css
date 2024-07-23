@@ -31,8 +31,9 @@ h2 {
   box-sizing: border-box;
 }
 
-button {
+button, .log , .reg {
   padding: 10px;
+  margin-bottom: 10px;
   background-color: #0044cc;
   color: white;
   border: none;
