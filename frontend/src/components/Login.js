@@ -1,45 +1,48 @@
-// src/components/Login.js
 import React, { useState } from 'react';
-import axios from '../services/axiosConfig';
+import axios from 'axios';
 import './Loginreg.css';
 
 const Login = ({ onLoginSuccess }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+  const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+  const { email, password } = formData;
+
+  const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
-      const { token } = response.data;
-      localStorage.setItem('token', token);
-      onLoginSuccess();
+      const res = await axios.post('/api/auth/login', formData);
+      localStorage.setItem('token', res.data.token);
+      onLoginSuccess(res.data.token);
     } catch (err) {
-      console.error('Login error:', err);
+      setError(err.response.data.message || 'Login error');
     }
   };
 
   return (
-    <div className="auth-container">
-      <form onSubmit={handleSubmit} className="auth-form">
+    <div className="login-container">
+      <form onSubmit={onSubmit}>
         <h2>Login</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        {error && <p className="error">{error}</p>}
+        <div className="form-group">
+          <label>Email</label>
+          <input type="email" name="email" value={email} onChange={onChange} required />
+        </div>
+        <div className="form-group">
+          <label>Password</label>
+          <input type="password" name="password" value={password} onChange={onChange} required />
+        </div>
         <button type="submit">Login</button>
+        <p>Don't have an account? <a href="/register">Register</a></p>
       </form>
-      <p>Don't have an account? <a href="/register">Register</a></p>
     </div>
   );
 };
 
 export default Login;
+

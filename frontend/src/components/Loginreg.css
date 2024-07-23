@@ -31,7 +31,7 @@ h2 {
   box-sizing: border-box;
 }
 
-button {
+button , a {
   padding: 10px;
   background-color: #0044cc;
   color: white;
