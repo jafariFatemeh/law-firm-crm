@@ -8,8 +8,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      const res = await axios.get('/dashboard');
-      setDashboardData(res.data);
+      const result = await axios.get('/api/dashboard');
+      setDashboardData(result.data);
     };
 
     fetchDashboardData();
@@ -18,22 +18,22 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <h2>Dashboard</h2>
-      <div className="dashboard-stats">
-        <div className="stat-item">
+      <div className="dashboard-cards">
+        <div className="card">
           <h3>Cases</h3>
           <p>{dashboardData.cases}</p>
         </div>
-        <div className="stat-item">
+        <div className="card">
           <h3>Clients</h3>
           <p>{dashboardData.clients}</p>
         </div>
-        <div className="stat-item">
-          <h3>Communications</h3>
-          <p>{dashboardData.communications}</p>
-        </div>
-        <div className="stat-item">
+        <div className="card">
           <h3>Documents</h3>
           <p>{dashboardData.documents}</p>
+        </div>
+        <div className="card">
+          <h3>Communications</h3>
+          <p>{dashboardData.communications}</p>
         </div>
       </div>
     </div>

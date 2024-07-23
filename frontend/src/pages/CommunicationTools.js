@@ -7,7 +7,7 @@ const CommunicationTools = () => {
 
   useEffect(() => {
     const fetchCommunications = async () => {
-      const res = await axios.get('/communications');
+      const res = await axios.get('api/communications');
       setCommunications(res.data);
     };
 

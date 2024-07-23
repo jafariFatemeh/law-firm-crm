@@ -7,7 +7,7 @@ const ClientManagement = () => {
 
   useEffect(() => {
     const fetchClients = async () => {
-      const res = await axios.get('/clients');
+      const res = await axios.get('api/clients');
       setClients(res.data);
     };
 

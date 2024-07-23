@@ -14,7 +14,10 @@ const App = () => {
 
   const handleLoginSuccess = (token) => {
     setIsAuthenticated(true);
-    localStorage.setItem('token', token); // Save token in local storage for persistence
+  };
+
+  const handleRegisterSuccess = () => {
+    setIsAuthenticated(true);
   };
 
   const handleLogout = () => {
@@ -44,10 +47,10 @@ const App = () => {
           <div className="content">
             <Switch>
               <Route path="/login">
-                {isAuthenticated ? <Redirect to="/dashboard" /> : <Login onLoginSuccess={handleLoginSuccess} />}
+              <Login onLoginSuccess={handleLoginSuccess} />
               </Route>
               <Route path="/register">
-                {isAuthenticated ? <Redirect to="/dashboard" /> : <RegistrationForm />}
+              <RegistrationForm onRegisterSuccess={handleRegisterSuccess} />
               </Route>
               <Route path="/dashboard">
                 {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}

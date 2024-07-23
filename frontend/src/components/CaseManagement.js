@@ -7,7 +7,7 @@ const CaseManagement = () => {
 
   useEffect(() => {
     const fetchCases = async () => {
-      const res = await axios.get('/cases');
+      const res = await axios.get('api/cases');
       setCases(res.data);
     };
 

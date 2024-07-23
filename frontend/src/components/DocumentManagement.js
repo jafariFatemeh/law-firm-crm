@@ -7,7 +7,7 @@ const DocumentManagement = () => {
 
   useEffect(() => {
     const fetchDocuments = async () => {
-      const res = await axios.get('/documents');
+      const res = await axios.get('api/documents');
       setDocuments(res.data);
     };
 
