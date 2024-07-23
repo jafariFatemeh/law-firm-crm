@@ -17,7 +17,7 @@ const RegistrationForm = ({ onRegisterSuccess }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/auth/register', { name, email, password });
+      const res = await axios.post('api/auth/register', { name, email, password });
       onRegisterSuccess(res.data.token); // Pass the token to the parent component
     } catch (err) {
       console.error('Registration error:', err.response.data);
