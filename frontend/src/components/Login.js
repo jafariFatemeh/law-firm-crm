@@ -36,7 +36,7 @@ const Login = ({ onLoginSuccess }) => {
           <input type="password" name="password" value={password} onChange={onChange} required />
         </div>
         <button type="submit">Login</button>
-        <p>Don't have an account? <button> <a href="/register">Register</a> </button></p>
+        <button> <a href="/register">Register</a> </button>
       </form>
     </div>
   );
