@@ -45,4 +45,3 @@ const RegistrationForm = ({ onRegisterSuccess }) => {
 };
 
 export default RegistrationForm;
-
