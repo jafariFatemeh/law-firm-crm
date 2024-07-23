@@ -47,10 +47,10 @@ const App = () => {
           <div className="content">
             <Switch>
               <Route path="/login">
-              <Login onLoginSuccess={handleLoginSuccess} />
+              {isAuthenticated ? <Redirect to="/dashboard" /> : <Login onLoginSuccess={handleLoginSuccess} />}
               </Route>
               <Route path="/register">
-              <RegistrationForm onRegisterSuccess={handleRegisterSuccess} />
+              {isAuthenticated ? <Redirect to="/dashboard" /> : <RegistrationForm onRegisterSuccess={handleRegisterSuccess} />}
               </Route>
               <Route path="/dashboard">
                 {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}
