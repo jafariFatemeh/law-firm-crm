@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import './Loginreg.css';
 
 const Login = ({ onLoginSuccess }) => {
@@ -7,7 +7,6 @@ const Login = ({ onLoginSuccess }) => {
     email: '',
     password: '',
   });
-  const [error, setError] = useState('');
 
   const { email, password } = formData;
 
@@ -20,7 +19,7 @@ const Login = ({ onLoginSuccess }) => {
       localStorage.setItem('token', res.data.token);
       onLoginSuccess(res.data.token);
     } catch (err) {
-      setError(err.response.data.message || 'Login error');
+      console.error('Login error:', err.response.data);
     }
   };
 
@@ -28,7 +27,6 @@ const Login = ({ onLoginSuccess }) => {
     <div className="login-container">
       <form onSubmit={onSubmit}>
         <h2>Login</h2>
-        {error && <p className="error">{error}</p>}
         <div className="form-group">
           <label>Email</label>
           <input type="email" name="email" value={email} onChange={onChange} required />
