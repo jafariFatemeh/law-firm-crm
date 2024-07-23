@@ -1,35 +1,93 @@
 /* App.css */
-.app {
-  display: flex;
-  height: 100vh;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-nav {
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background-color: #0044cc;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header .logo {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.header nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+.header nav a:hover {
+  text-decoration: underline;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  width: 200px;
   background-color: #333;
   color: white;
-  width: 200px;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-nav ul {
-  list-style: none;
-  padding: 0;
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  margin-bottom: 10px;
 }
 
-nav ul li {
-  margin: 10px 0;
+.sidebar a:hover {
+  text-decoration: underline;
 }
 
-nav ul li a {
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.footer {
+  background-color: #0044cc;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.footer a {
   color: white;
   text-decoration: none;
 }
 
-nav ul li a:hover {
+.footer a:hover {
   text-decoration: underline;
 }
 
-main {
-  flex: 1;
-  padding: 20px;
+.footer p {
+  margin: 5px 0;
 }

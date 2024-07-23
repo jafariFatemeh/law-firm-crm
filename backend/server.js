@@ -9,9 +9,8 @@ const app = express();
 
 connectDB();
 
-app.use(express.json({ extended: false }));
-
 const cors = require('cors');
+app.use(express.json({ extended: false }));
 
 app.use(cors());
 

@@ -1,9 +1,8 @@
 // backend/models/User.js
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
-  username: {
+const UserSchema = new mongoose.Schema({
+  name: {
     type: String,
     required: true,
   },
@@ -15,10 +14,6 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
   },
 });
 

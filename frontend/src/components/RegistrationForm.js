@@ -1,44 +1,47 @@
 import React, { useState } from 'react';
-import axios from '../services/axiosConfig';
+import axios from 'axios';
 import './Loginreg.css';
 
 const RegistrationForm = ({ onRegisterSuccess }) => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+  const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+  const { name, email, password } = formData;
+
+  const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/auth/register', { username, email, password });
+      const res = await axios.post('/api/auth/register', formData);
+      localStorage.setItem('token', res.data.token);
       onRegisterSuccess();
     } catch (err) {
-      console.error('Registration error:', err);
+      setError(err.response.data.message || 'Registration error');
     }
   };
 
   return (
-    <div className="auth-container">
-      <form onSubmit={handleSubmit} className="auth-form">
+    <div className="register-container">
+      <form onSubmit={onSubmit}>
         <h2>Register</h2>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        {error && <p className="error">{error}</p>}
+        <div className="form-group">
+          <label>Name</label>
+          <input type="text" name="name" value={name} onChange={onChange} required />
+        </div>
+        <div className="form-group">
+          <label>Email</label>
+          <input type="email" name="email" value={email} onChange={onChange} required />
+        </div>
+        <div className="form-group">
+          <label>Password</label>
+          <input type="password" name="password" value={password} onChange={onChange} required />
+        </div>
         <button type="submit">Register</button>
       </form>
     </div>
