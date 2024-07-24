@@ -1,54 +1,57 @@
 // backend/controllers/clientController.js
 const Client = require('../models/Client');
 
-const getClients = async (req, res) => {
+exports.getClients = async (req, res) => {
   try {
     const clients = await Client.find();
-    res.json(clients);
+    res.status(200).json(clients);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching clients' });
+    res.status(500).json({ message: err.message });
   }
 };
 
-const addClient = async (req, res) => {
-  const { name, contactInfo } = req.body;
-  const client = new Client({ name, contactInfo });
+exports.addClient = async (req, res) => {
+  const client = new Client({
+    name: req.body.name,
+    contactInfo: req.body.contactInfo
+  });
 
   try {
-    const savedClient = await client.save();
-    res.status(201).json(savedClient);
+    const newClient = await client.save();
+    res.status(201).json(newClient);
   } catch (err) {
-    res.status(500).json({ message: 'Error adding client' });
+    res.status(400).json({ message: err.message });
   }
 };
 
-const updateClient = async (req, res) => {
-  const { id } = req.params;
-  const { name, contactInfo } = req.body;
-
+exports.updateClient = async (req, res) => {
   try {
-    const updatedClient = await Client.findByIdAndUpdate(id, { name, contactInfo }, { new: true });
-    res.json(updatedClient);
+    const client = await Client.findById(req.params.id);
+    if (!client) {
+      return res.status(404).json({ message: 'Client not found' });
+    }
+
+    client.name = req.body.name || client.name;
+    client.contactInfo = req.body.contactInfo || client.contactInfo;
+
+    const updatedClient = await client.save();
+    res.status(200).json(updatedClient);
   } catch (err) {
-    res.status(500).json({ message: 'Error updating client' });
+    res.status(400).json({ message: err.message });
   }
 };
 
-const deleteClient = async (req, res) => {
-  const { id } = req.params;
-
+exports.deleteClient = async (req, res) => {
   try {
-    await Client.findByIdAndDelete(id);
-    res.json({ message: 'Client deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ message: 'Error deleting client' });
-  }
-};
+    const client = await Client.findById(req.params.id);
+    if (!client) {
+      return res.status(404).json({ message: 'Client not found' });
+    }
 
-module.exports = {
-  getClients,
-  addClient,
-  updateClient,
-  deleteClient,
+    await client.remove();
+    res.status(200).json({ message: 'Client deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
