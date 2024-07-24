@@ -52,19 +52,19 @@ const App = () => {
               <Route path="/register">
               {isAuthenticated ? <Redirect to="/dashboard" /> : <RegistrationForm onRegisterSuccess={handleRegisterSuccess} />}
               </Route>
-              <Route path="api/dashboard">
+              <Route path="/dashboard">
                 {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}
               </Route>
-              <Route path="api/cases">
+              <Route path="/cases">
                 {isAuthenticated ? <CaseManagement /> : <Redirect to="/login" />}
               </Route>
-              <Route path="api/clients">
+              <Route path="/clients">
                 {isAuthenticated ? <ClientManagement /> : <Redirect to="/login" />}
               </Route>
-              <Route path="api/documents">
+              <Route path="/documents">
                 {isAuthenticated ? <DocumentManagement /> : <Redirect to="/login" />}
               </Route>
-              <Route path="api/communications">
+              <Route path="/communications">
                 {isAuthenticated ? <CommunicationTools /> : <Redirect to="/login" />}
               </Route>
               <Redirect from="/" to="/login" />
