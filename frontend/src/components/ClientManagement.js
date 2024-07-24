@@ -10,23 +10,20 @@ const ClientManagement = () => {
 
   useEffect(() => {
     const fetchClients = async () => {
-      try {
-        const res = await axios.get('api/clients');
-        setClients(res.data);
-      } catch (err) {
-        console.error(err);
-      }
+      const result = await axios.get('https://backend-0vwz.onrender.com/api/clients');
+      setClients(result.data);
     };
-
     fetchClients();
   }, []);
 
-  const handleAddClient = async (client) => {
+
+const saveClient = async (client) => {
     try {
-      const res = await axios.post('api/clients', client);
-      setClients([...clients, res.data]);
-    } catch (err) {
-      console.error(err);
+      const response = await axios.post('https://backend-0vwz.onrender.com/api/clients', client);
+      setClients([...clients, response.data]);
+    } catch (error) {
+      console.error('Error saving client:', error);
+      alert(`Error: ${error.response?.data?.message || 'Could not save client'}`);
     }
   };
 
@@ -50,35 +47,27 @@ const ClientManagement = () => {
   };
 
   return (
-    <div className="client-management">
-      <h1>Client Management</h1>
-      <button onClick={() => setEditingClient({ name: '', contactInfo: '' })}>Add New Client</button>
-      {editingClient && (
-        <ClientForm
-          client={editingClient}
-          onSave={(client) => {
-            editingClient._id ? handleEditClient(client) : handleAddClient(client);
-          }}
-          onCancel={() => setEditingClient(null)}
-        />
-      )}
+    <div>
+      <h2>Client Management</h2>
+      <ClientForm onSave={saveClient} />
       <table>
         <thead>
           <tr>
-            <th>Client Name</th>
+            <th>Name</th>
             <th>Contact Info</th>
-            <th>Actions</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th>Phone</th>
           </tr>
         </thead>
         <tbody>
-          {clients.map((client) => (
+          {clients.map(client => (
             <tr key={client._id}>
               <td>{client.name}</td>
               <td>{client.contactInfo}</td>
-              <td>
-                <button onClick={() => setEditingClient(client)}>Edit</button>
-                <button onClick={() => handleDeleteClient(client._id)}>Delete</button>
-              </td>
+              <td>{client.address}</td>
+              <td>{client.email}</td>
+              <td>{client.phone}</td>
             </tr>
           ))}
         </tbody>

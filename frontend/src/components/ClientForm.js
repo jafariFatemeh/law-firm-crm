@@ -1,51 +1,32 @@
-import React, { useState, useEffect } from 'react';
+
 import './ClientForm.css';
+import React, { useState } from 'react';
 
-const ClientForm = ({ client, onSave, onCancel }) => {
-  const [formData, setFormData] = useState({ name: '', contactInfo: '' });
+const ClientForm = ({ onSave }) => {
+  const [name, setName] = useState('');
+  const [contactInfo, setContactInfo] = useState('');
+  const [address, setAddress] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
 
-  useEffect(() => {
-    if (client) {
-      setFormData({ name: client.name, contactInfo: client.contactInfo });
-    }
-  }, [client]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    onSave({ ...client, ...formData });
+    if (!name || !contactInfo || !email) {
+      alert('Name, contact info, and email are required');
+      return;
+    }
+    const newClient = { name, contactInfo, address, email, phone };
+    onSave(newClient);
   };
 
   return (
-    <form className="client-form" onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label>Name</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label>Contact Info</label>
-        <input
-          type="text"
-          name="contactInfo"
-          value={formData.contactInfo}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="form-actions">
-        <button type="submit">Save</button>
-        <button type="button" onClick={onCancel}>Cancel</button>
-      </div>
+    <form onSubmit={onSubmit}>
+      <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" required />
+      <input type="text" value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} placeholder="Contact Info" required />
+      <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Address" />
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
+      <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone" />
+      <button type="submit">Save</button>
     </form>
   );
 };

@@ -10,17 +10,26 @@ exports.getClients = async (req, res) => {
   }
 };
 
-exports.addClient = async (req, res) => {
-  const client = new Client({
-    name: req.body.name,
-    contactInfo: req.body.contactInfo
-  });
-
+exports.createClient = async (req, res) => {
   try {
-    const newClient = await client.save();
+    const { name, contactInfo, address, email, phone } = req.body;
+
+    if (!name || !contactInfo || !email) {
+      return res.status(400).json({ message: 'Name, contact info, and email are required' });
+    }
+
+    const newClient = new Client({
+      name,
+      contactInfo,
+      address,
+      email,
+      phone,
+    });
+
+    await newClient.save();
     res.status(201).json(newClient);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
