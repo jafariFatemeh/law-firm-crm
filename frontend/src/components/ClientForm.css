@@ -1,0 +1,46 @@
+.client-form {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .client-form .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .client-form .form-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .client-form .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .client-form .form-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .client-form .form-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .client-form .form-actions button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .client-form .form-actions button[type="button"] {
+    background-color: #6c757d;
+    color: white;
+  }
+  

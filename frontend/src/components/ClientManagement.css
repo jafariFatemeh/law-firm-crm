@@ -2,19 +2,51 @@
     padding: 20px;
   }
   
-  .clients-list {
-    display: flex;
-    flex-wrap: wrap;
+  .client-management h1 {
+    margin-bottom: 20px;
   }
   
-  .client-item {
-    background-color: white;
-    padding: 20px;
-    margin: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    flex: 1;
-    min-width: 200px;
-    max-width: 300px;
+  .client-management button {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .client-management table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .client-management th, .client-management td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .client-management th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
+  
+  .client-management td {
+    text-align: left;
+  }
+  
+  .client-management .actions button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .client-management .actions button:last-child {
+    background-color: #dc3545;
   }
   
