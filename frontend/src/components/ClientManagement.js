@@ -11,7 +11,7 @@ const ClientManagement = () => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const res = await axios.get('/clients');
+        const res = await axios.get('api/clients');
         setClients(res.data);
       } catch (err) {
         console.error(err);
@@ -23,7 +23,7 @@ const ClientManagement = () => {
 
   const handleAddClient = async (client) => {
     try {
-      const res = await axios.post('/clients', client);
+      const res = await axios.post('api/clients', client);
       setClients([...clients, res.data]);
     } catch (err) {
       console.error(err);
@@ -32,7 +32,7 @@ const ClientManagement = () => {
 
   const handleEditClient = async (client) => {
     try {
-      const res = await axios.put(`/clients/${client._id}`, client);
+      const res = await axios.put(`api/clients/${client._id}`, client);
       setClients(clients.map((c) => (c._id === client._id ? res.data : c)));
       setEditingClient(null);
     } catch (err) {
@@ -42,7 +42,7 @@ const ClientManagement = () => {
 
   const handleDeleteClient = async (id) => {
     try {
-      await axios.delete(`/clients/${id}`);
+      await axios.delete(`api/clients/${id}`);
       setClients(clients.filter((client) => client._id !== id));
     } catch (err) {
       console.error(err);
