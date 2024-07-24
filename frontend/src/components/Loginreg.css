@@ -34,14 +34,14 @@ h2 {
 button, .log , .reg {
   padding: 10px;
   margin-bottom: 10px;
-  background-color: #ef8833;
+  background-color: #fab888;
   color: white;
   border: none;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #ef8833;
+  background-color: #fab888;
 }
 
 .error {

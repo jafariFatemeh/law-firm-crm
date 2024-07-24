@@ -15,7 +15,7 @@ body, html {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #FF6600;
+  background-color: #fab888;
   padding: 10px 20px;
   color: white;
 }
@@ -65,7 +65,7 @@ nav a:hover {
 }
 
 .footer {
-  background-color: #FF6600;
+  background-color: #fab888;
   color: white;
   text-align: center;
   padding: 10px;
