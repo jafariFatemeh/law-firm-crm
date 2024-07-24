@@ -1,19 +1,26 @@
 // controllers/dashboardController.js
 const Case = require('../models/Case');
 const Client = require('../models/Client');
-const Communication = require('../models/Communication');
 const Document = require('../models/Document');
+const Communication = require('../models/Communication');
 
-exports.getDashboardData = async (req, res) => {
+const getDashboardData = async (req, res) => {
   try {
-    const cases = await Case.find().countDocuments();
-    const clients = await Client.find().countDocuments();
-    const communications = await Communication.find().countDocuments();
-    const documents = await Document.find().countDocuments();
+    const recentCases = await Case.find().sort({ date: -1 }).limit(5);
+    const recentClients = await Client.find().sort({ date: -1 }).limit(5);
+    const upcomingDeadlines = await Document.find({ deadline: { $gte: new Date() } }).sort({ deadline: 1 }).limit(5);
 
-    res.json({ cases, clients, communications, documents });
+    res.json({
+      recentCases,
+      recentClients,
+      upcomingDeadlines,
+    });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    res.status(500).json({ message: 'Error fetching dashboard data' });
   }
 };
+
+module.exports = {
+  getDashboardData,
+};
+

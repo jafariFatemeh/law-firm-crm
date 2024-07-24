@@ -1,59 +1,64 @@
 // src/pages/Dashboard.js
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from '../services/axiosConfig';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const [cases, setCases] = useState([]);
-  const [clients, setClients] = useState([]);
-  const [documents, setDocuments] = useState([]);
-  const [communications, setCommunications] = useState([]);
+  const [dashboardData, setDashboardData] = useState({
+    recentCases: [],
+    recentClients: [],
+    upcomingDeadlines: [],
+  });
 
   useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const res = await axios.get('/dashboard/data');
+        setDashboardData(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-      const fetchData = async () => {
-        try {
-          const casesRes = await axios.get('api/cases');
-          setCases(casesRes.data);
-  
-          const clientsRes = await axios.get('api/clients');
-          setClients(clientsRes.data);
-  
-          const documentsRes = await axios.get('api/documents');
-          setDocuments(documentsRes.data);
-  
-          const communicationsRes = await axios.get('api/communications');
-          setCommunications(communicationsRes.data);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-
-    fetchData();
+    fetchDashboardData();
   }, []);
 
   return (
-    <main className="main-content">
-          <h1>Welcome to Your CRM Dashboard</h1>
-          <div className="widgets">
-            <div className="widget">
-              <h2>Clients Overview</h2>
-              <p>Total Clients: {clients.length}</p>
-            </div>
-            <div className="widget">
-              <h2>Cases Overview</h2>
-              <p>Total Cases: {cases.length}</p>
-            </div>
-            <div className="widget">
-              <h2>Documents Overview</h2>
-              <p>Total Documents: {documents.length}</p>
-            </div>
-            <div className="widget">
-              <h2>Communications Overview</h2>
-              <p>Total Communications: {communications.length}</p>
-              </div>
-            </div>
-        </main>
+    <div className="dashboard">
+      <h1>Dashboard</h1>
+      <div className="metrics">
+        <div className="metric-item">
+          <h2>Recent Cases</h2>
+          <ul>
+            {dashboardData.recentCases.map((caseItem) => (
+              <li key={caseItem._id}>
+                {caseItem.title} - {new Date(caseItem.date).toLocaleDateString()}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="metric-item">
+          <h2>Recent Clients</h2>
+          <ul>
+            {dashboardData.recentClients.map((client) => (
+              <li key={client._id}>
+                {client.name} - {new Date(client.date).toLocaleDateString()}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="metric-item">
+          <h2>Upcoming Deadlines</h2>
+          <ul>
+            {dashboardData.upcomingDeadlines.map((document) => (
+              <li key={document._id}>
+                {document.title} - {new Date(document.deadline).toLocaleDateString()}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 };
 
