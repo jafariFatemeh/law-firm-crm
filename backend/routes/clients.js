@@ -1,10 +1,10 @@
 // backend/routes/clients.js
 const express = require('express');
-const { getClients, createClient, updateClient, deleteClient } = require('../controllers/clientController');
+const { createClient, getClients, updateClient, deleteClient } = require('../controllers/clientController');
 const router = express.Router();
 
-router.get('/', getClients);
 router.post('/', createClient);
+router.get('/', getClients);
 router.put('/:id', updateClient);
 router.delete('/:id', deleteClient);
 

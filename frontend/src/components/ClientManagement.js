@@ -1,77 +1,106 @@
 // src/pages/ClientManagement.js
-import React, { useEffect, useState } from 'react';
-import axios from '../services/axiosConfig';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
+import { Add, Edit, Delete } from '@mui/icons-material';
 import ClientForm from './ClientForm';
-import './ClientManagement.css';
 
 const ClientManagement = () => {
   const [clients, setClients] = useState([]);
-  const [editingClient, setEditingClient] = useState(null);
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
-    const fetchClients = async () => {
-      const result = await axios.get('https://backend-0vwz.onrender.com/api/clients');
-      setClients(result.data);
-    };
     fetchClients();
   }, []);
 
+  const fetchClients = async () => {
+    const result = await axios.get('https://backend-0vwz.onrender.com/api/clients');
+    setClients(result.data);
+  };
 
-const saveClient = async (client) => {
+  const saveClient = async (client) => {
     try {
-      const response = await axios.post('https://backend-0vwz.onrender.com/api/clients', client);
-      setClients([...clients, response.data]);
+      if (selectedClient) {
+        const response = await axios.put(`https://backend-0vwz.onrender.com/api/clients/${selectedClient._id}`, client);
+        setClients(clients.map(c => (c._id === selectedClient._id ? response.data : c)));
+      } else {
+        const response = await axios.post('https://backend-0vwz.onrender.com/api/clients', client);
+        setClients([...clients, response.data]);
+      }
+      setFormOpen(false);
+      setSelectedClient(null);
     } catch (error) {
       console.error('Error saving client:', error);
       alert(`Error: ${error.response?.data?.message || 'Could not save client'}`);
     }
   };
 
-  const handleEditClient = async (client) => {
+  const deleteClient = async (id) => {
     try {
-      const res = await axios.put(`api/clients/${client._id}`, client);
-      setClients(clients.map((c) => (c._id === client._id ? res.data : c)));
-      setEditingClient(null);
-    } catch (err) {
-      console.error(err);
+      await axios.delete(`https://backend-0vwz.onrender.com/api/clients/${id}`);
+      setClients(clients.filter(client => client._id !== id));
+    } catch (error) {
+      console.error('Error deleting client:', error);
+      alert(`Error: ${error.response?.data?.message || 'Could not delete client'}`);
     }
   };
 
-  const handleDeleteClient = async (id) => {
-    try {
-      await axios.delete(`api/clients/${id}`);
-      setClients(clients.filter((client) => client._id !== id));
-    } catch (err) {
-      console.error(err);
-    }
+  const handleAddClick = () => {
+    setSelectedClient(null);
+    setFormOpen(true);
+  };
+
+  const handleEditClick = (client) => {
+    setSelectedClient(client);
+    setFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setFormOpen(false);
+    setSelectedClient(null);
   };
 
   return (
     <div>
       <h2>Client Management</h2>
-      <ClientForm onSave={saveClient} />
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Contact Info</th>
-            <th>Address</th>
-            <th>Email</th>
-            <th>Phone</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clients.map(client => (
-            <tr key={client._id}>
-              <td>{client.name}</td>
-              <td>{client.contactInfo}</td>
-              <td>{client.address}</td>
-              <td>{client.email}</td>
-              <td>{client.phone}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleAddClick}>
+        Add New Client
+      </Button>
+      <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Contact Info</TableCell>
+              <TableCell>Address</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Phone</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {clients.map((client) => (
+              <TableRow key={client._id}>
+                <TableCell>{client.name}</TableCell>
+                <TableCell>{client.contactInfo}</TableCell>
+                <TableCell>{client.address}</TableCell>
+                <TableCell>{client.email}</TableCell>
+                <TableCell>{client.phone}</TableCell>
+                <TableCell>
+                  <IconButton color="primary" onClick={() => handleEditClick(client)}>
+                    <Edit />
+                  </IconButton>
+                  <IconButton color="secondary" onClick={() => deleteClient(client._id)}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {formOpen && <ClientForm client={selectedClient} onSave={saveClient} onClose={handleCloseForm} />}
     </div>
   );
 };
