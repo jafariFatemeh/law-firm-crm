@@ -1,27 +1,33 @@
 // backend/models/Client.js
 const mongoose = require('mongoose');
 
-const ClientSchema = new mongoose.Schema({
+const clientSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
-  email: {
+  contactInfo: {
     type: String,
-    required: true
-  },
-  phone: {
-    type: String,
-    required: true
+    required: true,
   },
   address: {
     type: String,
-    required: true
   },
-  date: {
+  email: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+  },
+  createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('Client', ClientSchema);
+module.exports = mongoose.model('Client', clientSchema);
