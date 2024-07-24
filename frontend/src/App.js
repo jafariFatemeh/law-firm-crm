@@ -39,10 +39,10 @@ const App = () => {
         </header>
         <div className="main-content">
           <aside className="sidebar">
-            <Link to="api/clients">Clients</Link>
-            <Link to="api/cases">Cases</Link>
-            <Link to="api/documents">Documents</Link>
-            <Link to="api/communications">Communications</Link>
+            <Link to="/clients">Clients</Link>
+            <Link to="/cases">Cases</Link>
+            <Link to="/documents">Documents</Link>
+            <Link to="/communications">Communications</Link>
           </aside>
           <div className="content">
             <Switch>
