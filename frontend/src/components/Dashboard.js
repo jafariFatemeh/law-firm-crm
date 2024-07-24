@@ -4,7 +4,6 @@ import axios from '../services/axiosConfig';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const [dashboardData, setDashboardData] = useState({});
   const [cases, setCases] = useState([]);
   const [clients, setClients] = useState([]);
   const [documents, setDocuments] = useState([]);
