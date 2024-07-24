@@ -39,10 +39,10 @@ const App = () => {
         </header>
         <div className="main-content">
           <aside className="sidebar">
-            <Link to="/clients">Clients</Link>
-            <Link to="/cases">Cases</Link>
-            <Link to="/documents">Documents</Link>
-            <Link to="/communications">Communications</Link>
+            <Link to="api/clients">Clients</Link>
+            <Link to="api/cases">Cases</Link>
+            <Link to="api/documents">Documents</Link>
+            <Link to="api/communications">Communications</Link>
           </aside>
           <div className="content">
             <Switch>
@@ -52,19 +52,19 @@ const App = () => {
               <Route path="/register">
               {isAuthenticated ? <Redirect to="/dashboard" /> : <RegistrationForm onRegisterSuccess={handleRegisterSuccess} />}
               </Route>
-              <Route path="/dashboard">
+              <Route path="api/dashboard">
                 {isAuthenticated ? <Dashboard /> : <Redirect to="/login" />}
               </Route>
-              <Route path="/cases">
+              <Route path="api/cases">
                 {isAuthenticated ? <CaseManagement /> : <Redirect to="/login" />}
               </Route>
-              <Route path="/clients">
+              <Route path="api/clients">
                 {isAuthenticated ? <ClientManagement /> : <Redirect to="/login" />}
               </Route>
-              <Route path="/documents">
+              <Route path="api/documents">
                 {isAuthenticated ? <DocumentManagement /> : <Redirect to="/login" />}
               </Route>
-              <Route path="/communications">
+              <Route path="api/communications">
                 {isAuthenticated ? <CommunicationTools /> : <Redirect to="/login" />}
               </Route>
               <Redirect from="/" to="/login" />
