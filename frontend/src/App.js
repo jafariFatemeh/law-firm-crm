@@ -67,10 +67,7 @@ const App = () => {
               <Route path="/communications">
                 {isAuthenticated ? <CommunicationTools /> : <Redirect to="/login" />}
               </Route>
-              <Route path="/home">
-                <h1>Welcome to the CRM Home Page</h1>
-              </Route>
-              <Redirect from="/" to="/home" />
+              <Redirect from="/" to="/login" />
             </Switch>
           </div>
         </div>
