@@ -3,8 +3,13 @@ const Case = require('../models/Case');
 
 // Create a new case
 exports.createCase = async (req, res) => {
+  const { title, description, date } = req.body;
   try {
-    const newCase = new Case(req.body);
+    const newCase = new Case({
+      title,
+      description,
+      date,
+    });
     const savedCase = await newCase.save();
     res.status(201).json(savedCase);
   } catch (err) {

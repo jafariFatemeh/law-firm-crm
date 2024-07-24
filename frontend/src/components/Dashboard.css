@@ -1,3 +1,9 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+}
+
 .dashboard {
   padding: 20px;
 }
@@ -24,4 +30,27 @@
 .card p {
   font-size: 1.2em;
   color: #333;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f0f0f0;
+}
+
+.widgets {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.widget {
+  background-color: white;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 200px;
+  text-align: center;
 }

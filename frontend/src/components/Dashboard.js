@@ -5,38 +5,56 @@ import './Dashboard.css';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({});
+  const [cases, setCases] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [communications, setCommunications] = useState([]);
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      const result = await axios.get('/api/dashboard');
-      setDashboardData(result.data);
-    };
 
-    fetchDashboardData();
+      const fetchData = async () => {
+        try {
+          const casesRes = await axios.get('api/cases');
+          setCases(casesRes.data);
+  
+          const clientsRes = await axios.get('api/clients');
+          setClients(clientsRes.data);
+  
+          const documentsRes = await axios.get('api/documents');
+          setDocuments(documentsRes.data);
+  
+          const communicationsRes = await axios.get('api/communications');
+          setCommunications(communicationsRes.data);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+    fetchData();
   }, []);
 
   return (
-    <div className="dashboard">
-      <h2>Dashboard</h2>
-      <div className="dashboard-cards">
-        <div className="card">
-          <h3>Cases</h3>
-          <p>{dashboardData.cases}</p>
-        </div>
-        <div className="card">
-          <h3>Clients</h3>
-          <p>{dashboardData.clients}</p>
-        </div>
-        <div className="card">
-          <h3>Documents</h3>
-          <p>{dashboardData.documents}</p>
-        </div>
-        <div className="card">
-          <h3>Communications</h3>
-          <p>{dashboardData.communications}</p>
-        </div>
-      </div>
-    </div>
+    <main className="main-content">
+          <h1>Welcome to Your CRM Dashboard</h1>
+          <div className="widgets">
+            <div className="widget">
+              <h2>Clients Overview</h2>
+              <p>Total Clients: {clients.length}</p>
+            </div>
+            <div className="widget">
+              <h2>Cases Overview</h2>
+              <p>Total Cases: {cases.length}</p>
+            </div>
+            <div className="widget">
+              <h2>Documents Overview</h2>
+              <p>Total Documents: {documents.length}</p>
+            </div>
+            <div className="widget">
+              <h2>Communications Overview</h2>
+              <p>Total Communications: {communications.length}</p>
+              </div>
+            </div>
+        </main>
   );
 };
 
