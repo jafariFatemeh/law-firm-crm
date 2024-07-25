@@ -1,56 +1,54 @@
 // backend/controllers/caseController.js
 const Case = require('../models/Case');
+const Client = require('../models/Client');
 
-// Add a new case
 exports.addCase = async (req, res) => {
   try {
     const newCase = new Case(req.body);
-    await newCase.save();
-    res.status(201).json(newCase);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    const savedCase = await newCase.save();
+    await Client.findByIdAndUpdate(savedCase.client, { $push: { cases: savedCase._id } });
+    res.status(201).json(savedCase);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };
 
-// Get all cases
 exports.getAllCases = async (req, res) => {
   try {
-    const cases = await Case.find();
-    res.json(cases);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    const cases = await Case.find().populate('client');
+    res.status(200).json(cases);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };
 
-// Get a case by ID
 exports.getCaseById = async (req, res) => {
   try {
-    const caseData = await Case.findById(req.params.id);
-    if (!caseData) return res.status(404).json({ message: 'Case not found' });
-    res.json(caseData);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    const caseItem = await Case.findById(req.params.id).populate('client');
+    if (!caseItem) return res.status(404).json({ error: 'Case not found' });
+    res.status(200).json(caseItem);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };
 
-// Update a case
 exports.updateCase = async (req, res) => {
   try {
-    const caseData = await Case.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!caseData) return res.status(404).json({ message: 'Case not found' });
-    res.json(caseData);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    const updatedCase = await Case.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedCase) return res.status(404).json({ error: 'Case not found' });
+    res.status(200).json(updatedCase);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };
 
-// Delete a case
 exports.deleteCase = async (req, res) => {
   try {
-    const caseData = await Case.findByIdAndDelete(req.params.id);
-    if (!caseData) return res.status(404).json({ message: 'Case not found' });
-    res.json({ message: 'Case deleted' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    const deletedCase = await Case.findByIdAndDelete(req.params.id);
+    if (!deletedCase) return res.status(404).json({ error: 'Case not found' });
+    await Client.findByIdAndUpdate(deletedCase.client, { $pull: { cases: deletedCase._id } });
+    res.status(200).json({ message: 'Case deleted successfully' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };

@@ -14,7 +14,7 @@ const CaseManagement = () => {
   }, []);
 
   const fetchCases = async () => {
-    const response = await axios.get('api/cases');
+    const response = await axios.get('/cases');
     setCases(response.data);
   };
 

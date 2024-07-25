@@ -3,9 +3,9 @@ const express = require('express');
 const router = express.Router();
 const documentController = require('../controllers/documentController');
 
+router.post('/', documentController.addDocument);
 router.get('/', documentController.getAllDocuments);
-router.post('/', documentController.uploadDocument);
-router.put('/:id', documentController.updateDocument);
+router.get('/:id', documentController.getDocumentById);
 router.delete('/:id', documentController.deleteDocument);
 
 module.exports = router;
