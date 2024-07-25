@@ -1,20 +1,16 @@
 .document-management {
-    padding: 20px;
-  }
-  
-  .documents-list {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
-  .document-item {
-    background-color: white;
-    padding: 20px;
-    margin: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    flex: 1;
-    min-width: 200px;
-    max-width: 300px;
-  }
-  
+  padding: 20px;
+}
+
+.document-management h1 {
+  margin-bottom: 20px;
+}
+
+.document-management .MuiButton-root {
+  margin-bottom: 20px;
+}
+
+.document-management .MuiDataGrid-root {
+  margin-top: 20px;
+}
+ 

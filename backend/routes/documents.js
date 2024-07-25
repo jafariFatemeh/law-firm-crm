@@ -1,9 +1,11 @@
 // backend/routes/documents.js
 const express = require('express');
 const router = express.Router();
-const { getAllDocuments, addDocument } = require('../controllers/documentController');
+const documentController = require('../controllers/documentController');
 
-router.get('/', getAllDocuments);
-router.post('/', addDocument);
+router.get('/', documentController.getAllDocuments);
+router.post('/', documentController.uploadDocument);
+router.put('/:id', documentController.updateDocument);
+router.delete('/:id', documentController.deleteDocument);
 
 module.exports = router;
