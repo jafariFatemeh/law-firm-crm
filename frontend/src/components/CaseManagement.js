@@ -17,12 +17,12 @@ const CaseManagement = () => {
   }, []);
 
   const fetchCases = async () => {
-    const response = await axios.get('/cases');
+    const response = await axios.get('/api/cases');
     setCases(response.data);
   };
 
   const fetchClients = async () => {
-    const response = await axios.get('/clients');
+    const response = await axios.get('/api/clients');
     setClients(response.data);
   };
 
@@ -32,13 +32,13 @@ const CaseManagement = () => {
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async () => {
-    await axios.post('/cases', formData);
+    await axios.post('/api/cases', formData);
     fetchCases();
     handleClose();
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`/cases/${id}`);
+    await axios.delete(`/api/cases/${id}`);
     fetchCases();
   };
 

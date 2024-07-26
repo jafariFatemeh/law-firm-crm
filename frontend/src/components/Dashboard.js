@@ -13,7 +13,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const res = await axios.get('/dashboard/data');
+        const res = await axios.get('/api/dashboard/data');
         setDashboardData(res.data);
       } catch (err) {
         console.error(err);
