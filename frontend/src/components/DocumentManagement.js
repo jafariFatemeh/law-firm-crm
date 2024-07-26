@@ -26,13 +26,13 @@ const DocumentManagement = () => {
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append('file', file);
-    await axios.post('/documents/upload', formData);
+    await axios.post('api/documents/upload', formData);
     fetchDocuments();
     handleClose();
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`/documents/${id}`);
+    await axios.delete(`api/documents/${id}`);
     fetchDocuments();
   };
 
