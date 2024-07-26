@@ -7,8 +7,7 @@ const documentSchema = new Schema({
     type: String,
     required: true
   },
-  description: String,
-  fileUrl: {
+  filePath: {
     type: String,
     required: true
   },
@@ -21,6 +20,6 @@ const documentSchema = new Schema({
     type: Date,
     default: Date.now
   }
-}, { timestamps: true });
+});
 
 module.exports = mongoose.model('Document', documentSchema);

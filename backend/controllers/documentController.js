@@ -1,34 +1,35 @@
 // backend/controllers/documentController.js
-const Document = require('../models/Document');
-const Case = require('../models/Case');
 const multer = require('multer');
 const path = require('path');
+const Document = require('../models/Document');
+const Case = require('../models/Case');
 
+// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+    cb(null, `${Date.now()}_${file.originalname}`);
   }
 });
 
 const upload = multer({ storage: storage }).single('file');
 
-exports.addDocument = (req, res) => {
+exports.uploadDocument = async (req, res) => {
   upload(req, res, async (err) => {
-    if (err) return res.status(400).json({ error: err.message });
-
-    const newDocument = new Document({
-      title: req.body.title,
-      description: req.body.description,
-      fileUrl: req.file.path,
-      case: req.body.case
-    });
-
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
     try {
+      const { title, caseId } = req.body;
+      const newDocument = new Document({
+        title,
+        filePath: req.file.path,
+        case: caseId
+      });
       const savedDocument = await newDocument.save();
-      await Case.findByIdAndUpdate(savedDocument.case, { $push: { documents: savedDocument._id } });
+      await Case.findByIdAndUpdate(caseId, { $push: { documents: savedDocument._id } });
       res.status(201).json(savedDocument);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -40,16 +41,6 @@ exports.getAllDocuments = async (req, res) => {
   try {
     const documents = await Document.find().populate('case');
     res.status(200).json(documents);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-exports.getDocumentById = async (req, res) => {
-  try {
-    const document = await Document.findById(req.params.id).populate('case');
-    if (!document) return res.status(404).json({ error: 'Document not found' });
-    res.status(200).json(document);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
