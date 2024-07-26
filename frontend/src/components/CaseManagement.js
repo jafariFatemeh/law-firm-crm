@@ -17,12 +17,12 @@ const CaseManagement = () => {
   }, []);
 
   const fetchCases = async () => {
-    const response = await axios.get('api/cases');
+    const response = await axios.get('/cases');
     setCases(response.data);
   };
 
   const fetchClients = async () => {
-    const response = await axios.get('api/clients');
+    const response = await axios.get('/clients');
     setClients(response.data);
   };
 
@@ -32,13 +32,13 @@ const CaseManagement = () => {
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async () => {
-    await axios.post('api/cases', formData);
+    await axios.post('/cases', formData);
     fetchCases();
     handleClose();
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`api/cases/${id}`);
+    await axios.delete(`/cases/${id}`);
     fetchCases();
   };
 
@@ -46,7 +46,7 @@ const CaseManagement = () => {
     { field: 'title', headerName: 'Title', width: 150 },
     { field: 'description', headerName: 'Description', width: 250 },
     { field: 'status', headerName: 'Status', width: 150 },
-    { field: 'client', headerName: 'Client', width: 150, valueGetter: (params) => params.row.client.name },
+    { field: 'client', headerName: 'Client', width: 150, valueGetter: (params) => params.row.client ? params.row.client.name : 'N/A' },
     {
       field: 'actions',
       headerName: 'Actions',
