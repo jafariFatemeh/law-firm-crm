@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../services/axiosConfig';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import './CaseManagement.css';
 
 const CaseManagement = () => {
   const [cases, setCases] = useState([]);
@@ -60,7 +61,13 @@ const CaseManagement = () => {
     <div className="case-management">
       <h2>Case Management</h2>
       <Button variant="contained" color="primary" onClick={handleOpen}>Add New Case</Button>
-      <DataGrid rows={cases} columns={columns} pageSize={5} autoHeight />
+      <DataGrid 
+        rows={cases} 
+        columns={columns} 
+        pageSize={5} 
+        autoHeight 
+        getRowId={(row) => row._id} 
+      />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add New Case</DialogTitle>
         <DialogContent>
@@ -93,5 +100,4 @@ const CaseManagement = () => {
 };
 
 export default CaseManagement;
-
 
