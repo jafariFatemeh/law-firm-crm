@@ -18,12 +18,12 @@ const DocumentManagement = () => {
   }, []);
 
   const fetchDocuments = async () => {
-    const response = await axios.get('/api/documents');
+    const response = await axios.get('/documents');
     setDocuments(response.data);
   };
 
   const fetchCases = async () => {
-    const response = await axios.get('/api/cases');
+    const response = await axios.get('/cases');
     setCases(response.data);
   };
 
@@ -34,23 +34,33 @@ const DocumentManagement = () => {
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
   const handleSubmit = async () => {
+    if (!formData.title || !formData.caseId || !file) {
+      alert('All fields are required.');
+      return;
+    }
+
     const formDataObj = new FormData();
     formDataObj.append('title', formData.title);
     formDataObj.append('caseId', formData.caseId);
     formDataObj.append('file', file);
 
-    await axios.post('/api/documents/upload', formDataObj, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    try {
+      await axios.post('/documents/upload', formDataObj, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
-    fetchDocuments();
-    handleClose();
+      fetchDocuments();
+      handleClose();
+    } catch (error) {
+      console.error(error);
+      alert('Error uploading document.');
+    }
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`/api/documents/${id}`);
+    await axios.delete(`/documents/${id}`);
     fetchDocuments();
   };
 

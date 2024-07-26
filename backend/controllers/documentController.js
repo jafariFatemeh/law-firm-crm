@@ -23,6 +23,9 @@ exports.uploadDocument = async (req, res) => {
     }
     try {
       const { title, caseId } = req.body;
+      if (!title || !caseId || !req.file) {
+        return res.status(400).json({ error: 'Title, caseId, and file are required.' });
+      }
       const newDocument = new Document({
         title,
         filePath: req.file.path,
