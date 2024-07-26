@@ -15,17 +15,17 @@ const ClientManagement = () => {
   }, []);
 
   const fetchClients = async () => {
-    const result = await axios.get('https://backend-0vwz.onrender.com/api/clients');
+    const result = await axios.get('/api/clients');
     setClients(result.data);
   };
 
   const saveClient = async (client) => {
     try {
       if (selectedClient) {
-        const response = await axios.put(`https://backend-0vwz.onrender.com/api/clients/${selectedClient._id}`, client);
+        const response = await axios.put(`/api/clients/${selectedClient._id}`, client);
         setClients(clients.map(c => (c._id === selectedClient._id ? response.data : c)));
       } else {
-        const response = await axios.post('https://backend-0vwz.onrender.com/api/clients', client);
+        const response = await axios.post('/api/clients', client);
         setClients([...clients, response.data]);
       }
       setFormOpen(false);
@@ -38,7 +38,7 @@ const ClientManagement = () => {
 
   const deleteClient = async (id) => {
     try {
-      await axios.delete(`https://backend-0vwz.onrender.com/api/clients/${id}`);
+      await axios.delete(`/api/clients/${id}`);
       setClients(clients.filter(client => client._id !== id));
     } catch (error) {
       console.error('Error deleting client:', error);
