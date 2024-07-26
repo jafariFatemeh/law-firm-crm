@@ -18,12 +18,12 @@ const DocumentManagement = () => {
   }, []);
 
   const fetchDocuments = async () => {
-    const response = await axios.get('/documents');
+    const response = await axios.get('/api/documents');
     setDocuments(response.data);
   };
 
   const fetchCases = async () => {
-    const response = await axios.get('/cases');
+    const response = await axios.get('/api/cases');
     setCases(response.data);
   };
 
@@ -45,7 +45,7 @@ const DocumentManagement = () => {
     formDataObj.append('file', file);
 
     try {
-      await axios.post('/documents/upload', formDataObj, {
+      await axios.post('/api/documents/upload', formDataObj, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -60,7 +60,7 @@ const DocumentManagement = () => {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`/documents/${id}`);
+    await axios.delete(`/api/documents/${id}`);
     fetchDocuments();
   };
 

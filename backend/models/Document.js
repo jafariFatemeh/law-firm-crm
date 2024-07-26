@@ -15,11 +15,7 @@ const documentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Case',
     required: true
-  },
-  uploadedAt: {
-    type: Date,
-    default: Date.now
   }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Document', documentSchema);

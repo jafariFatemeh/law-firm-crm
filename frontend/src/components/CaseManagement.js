@@ -9,7 +9,7 @@ const CaseManagement = () => {
   const [cases, setCases] = useState([]);
   const [clients, setClients] = useState([]);
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({ title: '', description: '', status: 'Open', client: '' });
+  const [formData, setFormData] = useState({ title: '', description: '', status: '', client: '' });
 
   useEffect(() => {
     fetchCases();
@@ -46,7 +46,12 @@ const CaseManagement = () => {
     { field: 'title', headerName: 'Title', width: 150 },
     { field: 'description', headerName: 'Description', width: 250 },
     { field: 'status', headerName: 'Status', width: 150 },
-    { field: 'client', headerName: 'Client', width: 150, valueGetter: (params) => params.row.client ? params.row.client.name : 'N/A' },
+    {
+      field: 'client',
+      headerName: 'Client',
+      width: 150,
+      valueGetter: (params) => params.row.client ? params.row.client.name : 'N/A'
+    },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -100,4 +105,3 @@ const CaseManagement = () => {
 };
 
 export default CaseManagement;
-

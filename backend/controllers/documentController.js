@@ -1,20 +1,18 @@
 // backend/controllers/documentController.js
 const multer = require('multer');
-const path = require('path');
 const Document = require('../models/Document');
 const Case = require('../models/Case');
 
-// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}_${file.originalname}`);
+    cb(null, Date.now() + '-' + file.originalname);
   }
 });
 
-const upload = multer({ storage: storage }).single('file');
+const upload = multer({ storage }).single('file');
 
 exports.uploadDocument = async (req, res) => {
   upload(req, res, async (err) => {
