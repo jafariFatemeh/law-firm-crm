@@ -1,100 +1,106 @@
 // src/pages/ClientManagement.js
 import React, { useState, useEffect } from 'react';
-import axios from '../services/axiosConfig';
-import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
-import './ClientManagement.css';
+import axios from 'axios';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
+import { Add, Edit, Delete } from '@mui/icons-material';
+import ClientForm from './ClientForm';
 
 const ClientManagement = () => {
-  const [clients, setClients] = useState([]); // Initialize as an array
-  const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: '', contactInfo: '', address: '', email: '', phone: '' });
+  const [clients, setClients] = useState([]);
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
     fetchClients();
   }, []);
 
   const fetchClients = async () => {
+    const result = await axios.get('/api/clients');
+    setClients(result.data);
+  };
+
+  const saveClient = async (client) => {
     try {
-      const response = await axios.get('/clients');
-      // Ensure response data is an array
-      if (Array.isArray(response.data)) {
-        setClients(response.data);
+      if (selectedClient) {
+        const response = await axios.put(`/api/clients/${selectedClient._id}`, client);
+        setClients(clients.map(c => (c._id === selectedClient._id ? response.data : c)));
       } else {
-        console.error("Fetched clients data is not an array: ", response.data);
-        setClients([]);
+        const response = await axios.post('/api/clients', client);
+        setClients([...clients, response.data]);
       }
+      setFormOpen(false);
+      setSelectedClient(null);
     } catch (error) {
-      console.error("Error fetching clients: ", error);
-      setClients([]); // Set an empty array on error
+      console.error('Error saving client:', error);
+      alert(`Error: ${error.response?.data?.message || 'Could not save client'}`);
     }
   };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSubmit = async () => {
+  const deleteClient = async (id) => {
     try {
-      await axios.post('/clients', formData);
-      fetchClients();
-      handleClose();
+      await axios.delete(`/api/clients/${id}`);
+      setClients(clients.filter(client => client._id !== id));
     } catch (error) {
-      console.error("Error adding client: ", error);
+      console.error('Error deleting client:', error);
+      alert(`Error: ${error.response?.data?.message || 'Could not delete client'}`);
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`/clients/${id}`);
-      fetchClients();
-    } catch (error) {
-      console.error("Error deleting client: ", error);
-    }
+  const handleAddClick = () => {
+    setSelectedClient(null);
+    setFormOpen(true);
   };
 
-  const columns = [
-    { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'contactInfo', headerName: 'Contact Info', width: 150 },
-    { field: 'address', headerName: 'Address', width: 150 },
-    { field: 'email', headerName: 'Email', width: 150 },
-    { field: 'phone', headerName: 'Phone', width: 150 },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      width: 150,
-      renderCell: (params) => (
-        <Button onClick={() => handleDelete(params.id)} color="secondary" variant="contained">Delete</Button>
-      )
-    }
-  ];
+  const handleEditClick = (client) => {
+    setSelectedClient(client);
+    setFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setFormOpen(false);
+    setSelectedClient(null);
+  };
 
   return (
-    <div className="client-management">
+    <div>
       <h2>Client Management</h2>
-      <Button variant="contained" color="primary" onClick={handleOpen}>Add New Client</Button>
-      <DataGrid 
-        rows={clients} 
-        columns={columns} 
-        pageSize={5} 
-        autoHeight 
-        getRowId={(row) => row._id} // Ensure each row has a unique id
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New Client</DialogTitle>
-        <DialogContent>
-          <TextField name="name" label="Name" fullWidth margin="dense" onChange={handleChange} />
-          <TextField name="contactInfo" label="Contact Info" fullWidth margin="dense" onChange={handleChange} />
-          <TextField name="address" label="Address" fullWidth margin="dense" onChange={handleChange} />
-          <TextField name="email" label="Email" fullWidth margin="dense" onChange={handleChange} />
-          <TextField name="phone" label="Phone" fullWidth margin="dense" onChange={handleChange} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">Cancel</Button>
-          <Button onClick={handleSubmit} color="primary">Save</Button>
-        </DialogActions>
-      </Dialog>
+      <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleAddClick}>
+        Add New Client
+      </Button>
+      <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Contact Info</TableCell>
+              <TableCell>Address</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Phone</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {clients.map((client) => (
+              <TableRow key={client._id}>
+                <TableCell>{client.name}</TableCell>
+                <TableCell>{client.contactInfo}</TableCell>
+                <TableCell>{client.address}</TableCell>
+                <TableCell>{client.email}</TableCell>
+                <TableCell>{client.phone}</TableCell>
+                <TableCell>
+                  <IconButton color="primary" onClick={() => handleEditClick(client)}>
+                    <Edit />
+                  </IconButton>
+                  <IconButton color="secondary" onClick={() => deleteClient(client._id)}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {formOpen && <ClientForm client={selectedClient} onSave={saveClient} onClose={handleCloseForm} />}
     </div>
   );
 };
