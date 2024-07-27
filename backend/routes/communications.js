@@ -3,9 +3,9 @@ const express = require('express');
 const router = express.Router();
 const communicationController = require('../controllers/communicationController');
 
-router.post('/communications', communicationController.createCommunication);
-router.get('/communications', communicationController.getCommunications);
-router.put('/communications/:id', communicationController.updateCommunication);
-router.delete('/communications/:id', communicationController.deleteCommunication);
+router.post('/', communicationController.createCommunication);
+router.get('/', communicationController.getCommunications);
+router.put('/:id', communicationController.updateCommunication);
+router.delete('/:id', communicationController.deleteCommunication);
 
 module.exports = router;
