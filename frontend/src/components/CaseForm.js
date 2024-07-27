@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Grid, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import axios from 'axios';
-import './CaseForm.css';
 
 const CaseForm = ({ case: initialCase, onSave, onClose }) => {
   const [title, setTitle] = useState(initialCase ? initialCase.title : '');
