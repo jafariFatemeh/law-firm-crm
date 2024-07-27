@@ -4,26 +4,20 @@ import axios from 'axios';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import CaseForm from './CaseForm';
+import './CaseManagement.css';
 
 const CaseManagement = () => {
   const [cases, setCases] = useState([]);
-  const [clients, setClients] = useState([]);
   const [selectedCase, setSelectedCase] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
     fetchCases();
-    fetchClients();
   }, []);
 
   const fetchCases = async () => {
     const result = await axios.get('/api/cases');
     setCases(result.data);
-  };
-
-  const fetchClients = async () => {
-    const result = await axios.get('/api/clients');
-    setClients(result.data);
   };
 
   const saveCase = async (caseData) => {
@@ -46,7 +40,7 @@ const CaseManagement = () => {
   const deleteCase = async (id) => {
     try {
       await axios.delete(`/api/cases/${id}`);
-      setCases(cases.filter(caseItem => caseItem._id !== id));
+      setCases(cases.filter(c => c._id !== id));
     } catch (error) {
       console.error('Error deleting case:', error);
       alert(`Error: ${error.response?.data?.message || 'Could not delete case'}`);
@@ -80,8 +74,8 @@ const CaseManagement = () => {
             <TableRow>
               <TableCell>Title</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>Status</TableCell>
               <TableCell>Client</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -90,8 +84,8 @@ const CaseManagement = () => {
               <TableRow key={caseItem._id}>
                 <TableCell>{caseItem.title}</TableCell>
                 <TableCell>{caseItem.description}</TableCell>
+                <TableCell>{caseItem.client?.name}</TableCell>
                 <TableCell>{caseItem.status}</TableCell>
-                <TableCell>{caseItem.client.name}</TableCell>
                 <TableCell>
                   <IconButton color="primary" onClick={() => handleEditClick(caseItem)}>
                     <Edit />
@@ -105,7 +99,7 @@ const CaseManagement = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      {formOpen && <CaseForm caseItem={selectedCase} clients={clients} onSave={saveCase} onClose={handleCloseForm} />}
+      {formOpen && <CaseForm case={selectedCase} onSave={saveCase} onClose={handleCloseForm} />}
     </div>
   );
 };

@@ -18,3 +18,11 @@
     max-width: 300px;
   }
   
+  /* src/pages/CommunicationManagement.css */
+table {
+  margin-top: 20px;
+}
+
+button {
+  margin-bottom: 20px;
+}

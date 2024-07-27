@@ -1,25 +1,23 @@
-// src/components/DocumentForm.js
+// src/components/CommunicationForm.js
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Grid, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem } from '@mui/material';
 import axios from 'axios';
-import './DocumentForm.css';
+import './CommunicationForm.css';
 
-const DocumentForm = ({ documentData, onSave, onClose }) => {
-  const [name, setName] = useState(documentData ? documentData.name : '');
-  const [type, setType] = useState(documentData ? documentData.type : '');
-  const [caseId, setCaseId] = useState(documentData ? documentData.case : '');
-  const [url, setUrl] = useState(documentData ? documentData.url : '');
+const CommunicationForm = ({ communicationData, onSave, onClose }) => {
+  const [type, setType] = useState(communicationData ? communicationData.type : '');
+  const [content, setContent] = useState(communicationData ? communicationData.content : '');
+  const [caseId, setCaseId] = useState(communicationData ? communicationData.case : '');
   const [cases, setCases] = useState([]);
 
   useEffect(() => {
-    if (documentData) {
-      setName(documentData.name);
-      setType(documentData.type);
-      setCaseId(documentData.case);
-      setUrl(documentData.url);
+    if (communicationData) {
+      setType(communicationData.type);
+      setContent(communicationData.content);
+      setCaseId(communicationData.case);
     }
     fetchCases();
-  }, [documentData]);
+  }, [communicationData]);
 
   const fetchCases = async () => {
     try {
@@ -32,30 +30,30 @@ const DocumentForm = ({ documentData, onSave, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newDocumentData = { name, type, case: caseId, url };
-    onSave(newDocumentData);
+    const newCommunicationData = { type, content, case: caseId };
+    onSave(newCommunicationData);
   };
 
   return (
     <Dialog open={true} onClose={onClose}>
-      <DialogTitle>{documentData ? 'Edit Document' : 'Add New Document'}</DialogTitle>
+      <DialogTitle>{communicationData ? 'Edit Communication' : 'Add New Communication'}</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                label="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                label="Type"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
                 fullWidth
                 required
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Type"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
+                label="Content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
                 fullWidth
                 required
               />
@@ -76,15 +74,6 @@ const DocumentForm = ({ documentData, onSave, onClose }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="URL"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                fullWidth
-                required
-              />
-            </Grid>
           </Grid>
           <DialogActions>
             <Button onClick={onClose} color="secondary">Cancel</Button>
@@ -96,4 +85,4 @@ const DocumentForm = ({ documentData, onSave, onClose }) => {
   );
 };
 
-export default DocumentForm;
+export default CommunicationForm;

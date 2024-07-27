@@ -1,12 +1,11 @@
 // backend/models/Case.js
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const caseSchema = new Schema({
+const caseSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  description: { type: String, required: true },
-  status: { type: String, required: true },
-  client: { type: Schema.Types.ObjectId, ref: 'Client', required: true },
+  description: { type: String },
+  client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
+  status: { type: String, enum: ['Open', 'Closed', 'In Progress'], default: 'Open' },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

@@ -4,7 +4,7 @@ import Dashboard from './components/Dashboard';
 import CaseManagement from './components/CaseManagement';
 import ClientManagement from './components/ClientManagement';
 import DocumentManagement from './components/DocumentManagement';
-import CommunicationTools from './pages/CommunicationTools';
+import CommunicationManagement from './pages/CommunicationManagement';
 import Login from './components/Login';
 import RegistrationForm from './components/RegistrationForm';
 import './App.css';
@@ -65,7 +65,7 @@ const App = () => {
                 {isAuthenticated ? <DocumentManagement /> : <Redirect to="/login" />}
               </Route>
               <Route path="/communications">
-                {isAuthenticated ? <CommunicationTools /> : <Redirect to="/login" />}
+                {isAuthenticated ? <CommunicationManagement /> : <Redirect to="/login" />}
               </Route>
               <Redirect from="/" to="/login" />
             </Switch>
