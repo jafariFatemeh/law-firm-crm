@@ -6,8 +6,8 @@ const caseSchema = new mongoose.Schema({
   description: { type: String },
   client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
   status: { type: String, enum: ['Open', 'Closed', 'In Progress'], default: 'Open' },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Case', caseSchema);
+
+

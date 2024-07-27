@@ -2,9 +2,10 @@
 const mongoose = require('mongoose');
 
 const communicationSchema = new mongoose.Schema({
-  type: { type: String, required: true },
-  content: { type: String, required: true },
-  case: { type: mongoose.Schema.Types.ObjectId, ref: 'Case', required: true }
+  title: { type: String, required: true },
+  description: { type: String },
+  client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
+  // Additional fields as necessary
 }, { timestamps: true });
 
 module.exports = mongoose.model('Communication', communicationSchema);

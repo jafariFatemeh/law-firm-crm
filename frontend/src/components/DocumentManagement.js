@@ -1,11 +1,9 @@
 // src/pages/DocumentManagement.js
-// src/pages/DocumentManagement.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
-import { Add, Edit, Delete } from '@mui/icons-material';
-import DocumentForm from '../components/DocumentForm';
-import './DocumentManagement.css';
+import { Add, Delete } from '@mui/icons-material';
+import DocumentForm from './DocumentForm';
 
 const DocumentManagement = () => {
   const [documents, setDocuments] = useState([]);
@@ -17,8 +15,20 @@ const DocumentManagement = () => {
   }, []);
 
   const fetchDocuments = async () => {
-    const result = await axios.get('/api/documents');
-    setDocuments(result.data);
+    try {
+      const result = await axios.get('/api/documents');
+      console.log(result.data); // Log the data to check its structure
+      if (Array.isArray(result.data)) {
+        setDocuments(result.data);
+      } else {
+        console.error('Data is not an array:', result.data);
+        // Handle unexpected data
+        setDocuments([]);
+      }
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      alert('Failed to fetch documents. Please try again later.');
+    }
   };
 
   const saveDocument = async (documentData) => {
@@ -34,27 +44,22 @@ const DocumentManagement = () => {
       setSelectedDocument(null);
     } catch (error) {
       console.error('Error saving document:', error);
-      alert(`Error: ${error.response?.data?.message || 'Could not save document'}`);
+      alert('Error saving document.');
     }
   };
 
   const deleteDocument = async (id) => {
     try {
       await axios.delete(`/api/documents/${id}`);
-      setDocuments(documents.filter(doc => doc._id !== id));
+      setDocuments(documents.filter(d => d._id !== id));
     } catch (error) {
       console.error('Error deleting document:', error);
-      alert(`Error: ${error.response?.data?.message || 'Could not delete document'}`);
+      alert('Error deleting document.');
     }
   };
 
   const handleAddClick = () => {
     setSelectedDocument(null);
-    setFormOpen(true);
-  };
-
-  const handleEditClick = (document) => {
-    setSelectedDocument(document);
     setFormOpen(true);
   };
 
@@ -73,24 +78,21 @@ const DocumentManagement = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Type</TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell>File</TableCell>
               <TableCell>Case</TableCell>
-              <TableCell>URL</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {documents.map((document) => (
               <TableRow key={document._id}>
-                <TableCell>{document.name}</TableCell>
-                <TableCell>{document.type}</TableCell>
-                <TableCell>{document.case.title}</TableCell>
-                <TableCell>{document.url}</TableCell>
+                <TableCell>{document.title}</TableCell>
                 <TableCell>
-                  <IconButton color="primary" onClick={() => handleEditClick(document)}>
-                    <Edit />
-                  </IconButton>
+                  <a href={document.fileUrl} target="_blank" rel="noopener noreferrer">View</a>
+                </TableCell>
+                <TableCell>{document.case?.title || 'N/A'}</TableCell>
+                <TableCell>
                   <IconButton color="secondary" onClick={() => deleteDocument(document._id)}>
                     <Delete />
                   </IconButton>
@@ -100,7 +102,7 @@ const DocumentManagement = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      {formOpen && <DocumentForm documentData={selectedDocument} onSave={saveDocument} onClose={handleCloseForm} />}
+      {formOpen && <DocumentForm document={selectedDocument} onSave={saveDocument} onClose={handleCloseForm} />}
     </div>
   );
 };

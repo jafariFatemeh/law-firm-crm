@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import CaseForm from './CaseForm';
-import './CaseManagement.css';
 
 const CaseManagement = () => {
   const [cases, setCases] = useState([]);
@@ -18,14 +17,17 @@ const CaseManagement = () => {
   const fetchCases = async () => {
     try {
       const result = await axios.get('/api/cases');
-      console.log(result.data); // Check what is being returned
+      console.log(result.data); // Log the data to check its structure
       if (Array.isArray(result.data)) {
         setCases(result.data);
       } else {
         console.error('Data is not an array:', result.data);
+        // Handle unexpected data
+        setCases([]);
       }
     } catch (error) {
       console.error('Error fetching cases:', error);
+      alert('Failed to fetch cases. Please try again later.');
     }
   };
 
@@ -42,7 +44,7 @@ const CaseManagement = () => {
       setSelectedCase(null);
     } catch (error) {
       console.error('Error saving case:', error);
-      alert(`Error: ${error.response?.data?.message || 'Could not save case'}`);
+      alert('Error saving case.');
     }
   };
 
@@ -52,7 +54,7 @@ const CaseManagement = () => {
       setCases(cases.filter(c => c._id !== id));
     } catch (error) {
       console.error('Error deleting case:', error);
-      alert(`Error: ${error.response?.data?.message || 'Could not delete case'}`);
+      alert('Error deleting case.');
     }
   };
 
@@ -84,18 +86,15 @@ const CaseManagement = () => {
               <TableCell>Title</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Client</TableCell>
-              <TableCell>Status</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-          {Array.isArray(cases) ? (
-            cases.map((caseItem) => (
+            {cases.map((caseItem) => (
               <TableRow key={caseItem._id}>
                 <TableCell>{caseItem.title}</TableCell>
                 <TableCell>{caseItem.description}</TableCell>
-                <TableCell>{caseItem.client?.name}</TableCell>
-                <TableCell>{caseItem.status}</TableCell>
+                <TableCell>{caseItem.client?.name || 'N/A'}</TableCell>
                 <TableCell>
                   <IconButton color="primary" onClick={() => handleEditClick(caseItem)}>
                     <Edit />
@@ -105,16 +104,11 @@ const CaseManagement = () => {
                   </IconButton>
                 </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-            <TableCell colSpan={5}>No cases available</TableCell>
-          </TableRow>
-        )}
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
-      {formOpen && <CaseForm case={selectedCase} onSave={saveCase} onClose={handleCloseForm} />}
+      {formOpen && <CaseForm caseItem={selectedCase} onSave={saveCase} onClose={handleCloseForm} />}
     </div>
   );
 };

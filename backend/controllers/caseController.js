@@ -1,50 +1,56 @@
 // backend/controllers/caseController.js
 const Case = require('../models/Case');
 
-// Create a new case
-exports.createCase = async (req, res) => {
-  try {
-    const { title, description, client, status } = req.body;
-    if (!title || !client) {
-      return res.status(400).json({ message: 'Title and client are required' });
-    }
-    const newCase = new Case({ title, description, client, status });
-    await newCase.save();
-    res.status(201).json(newCase);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 // Get all cases
 exports.getCases = async (req, res) => {
   try {
     const cases = await Case.find().populate('client');
-    res.status(200).json(cases);
+    res.json(cases);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Error fetching cases', error });
+  }
+};
+
+// Get a single case by ID
+exports.getCaseById = async (req, res) => {
+  try {
+    const caseItem = await Case.findById(req.params.id).populate('client');
+    if (!caseItem) return res.status(404).json({ message: 'Case not found' });
+    res.json(caseItem);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching case', error });
+  }
+};
+
+// Create a new case
+exports.createCase = async (req, res) => {
+  try {
+    const newCase = new Case(req.body);
+    await newCase.save();
+    res.status(201).json(newCase);
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating case', error });
   }
 };
 
 // Update a case
 exports.updateCase = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title, description, client, status } = req.body;
-    const updatedCase = await Case.findByIdAndUpdate(id, { title, description, client, status }, { new: true });
-    res.status(200).json(updatedCase);
+    const updatedCase = await Case.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedCase) return res.status(404).json({ message: 'Case not found' });
+    res.json(updatedCase);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Error updating case', error });
   }
 };
 
 // Delete a case
 exports.deleteCase = async (req, res) => {
   try {
-    const { id } = req.params;
-    await Case.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Case deleted successfully' });
+    const deletedCase = await Case.findByIdAndDelete(req.params.id);
+    if (!deletedCase) return res.status(404).json({ message: 'Case not found' });
+    res.json({ message: 'Case deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Error deleting case', error });
   }
 };
