@@ -16,8 +16,17 @@ const CaseManagement = () => {
   }, []);
 
   const fetchCases = async () => {
-    const result = await axios.get('/api/cases');
-    setCases(result.data);
+    try {
+      const result = await axios.get('/api/cases');
+      console.log(result.data); // Check what is being returned
+      if (Array.isArray(result.data)) {
+        setCases(result.data);
+      } else {
+        console.error('Data is not an array:', result.data);
+      }
+    } catch (error) {
+      console.error('Error fetching cases:', error);
+    }
   };
 
   const saveCase = async (caseData) => {
@@ -80,7 +89,8 @@ const CaseManagement = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {cases.map((caseItem) => (
+          {Array.isArray(cases) ? (
+            cases.map((caseItem) => (
               <TableRow key={caseItem._id}>
                 <TableCell>{caseItem.title}</TableCell>
                 <TableCell>{caseItem.description}</TableCell>
@@ -95,7 +105,12 @@ const CaseManagement = () => {
                   </IconButton>
                 </TableCell>
               </TableRow>
-            ))}
+            ))
+          ) : (
+            <TableRow>
+            <TableCell colSpan={5}>No cases available</TableCell>
+          </TableRow>
+        )}
           </TableBody>
         </Table>
       </TableContainer>
