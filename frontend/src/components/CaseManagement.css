@@ -13,3 +13,11 @@
 .case-management .MuiDataGrid-root {
   margin-top: 20px;
 }
+
+table {
+  margin-top: 20px;
+}
+
+button {
+  margin-bottom: 20px;
+}

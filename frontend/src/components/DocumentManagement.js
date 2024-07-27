@@ -1,16 +1,16 @@
 // src/pages/DocumentManagement.js
 import React, { useState, useEffect } from 'react';
-import axios from '../services/axiosConfig';
-import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
-import './DocumentManagement.css';
+import axios from 'axios';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton, CircularProgress } from '@mui/material';
+import { Add, Edit, Delete } from '@mui/icons-material';
+import DocumentForm from './DocumentForm';
 
 const DocumentManagement = () => {
   const [documents, setDocuments] = useState([]);
   const [cases, setCases] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({ title: '', caseId: '' });
-  const [file, setFile] = useState(null);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchDocuments();
@@ -18,95 +18,99 @@ const DocumentManagement = () => {
   }, []);
 
   const fetchDocuments = async () => {
-    const response = await axios.get('/api/documents');
-    setDocuments(response.data);
+    setLoading(true);
+    const result = await axios.get('/api/documents');
+    setDocuments(result.data);
+    setLoading(false);
   };
 
   const fetchCases = async () => {
-    const response = await axios.get('/api/cases');
-    setCases(response.data);
+    const result = await axios.get('/api/cases');
+    setCases(result.data);
   };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-  const handleFileChange = (e) => setFile(e.target.files[0]);
-
-  const handleSubmit = async () => {
-    if (!formData.title || !formData.caseId || !file) {
-      alert('All fields are required.');
-      return;
-    }
-
-    const formDataObj = new FormData();
-    formDataObj.append('title', formData.title);
-    formDataObj.append('caseId', formData.caseId);
-    formDataObj.append('file', file);
-
+  const saveDocument = async (documentData) => {
     try {
-      await axios.post('/api/documents/upload', formDataObj, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      fetchDocuments();
-      handleClose();
+      if (selectedDocument) {
+        const response = await axios.put(`/api/documents/${selectedDocument._id}`, documentData);
+        setDocuments(documents.map(doc => (doc._id === selectedDocument._id ? response.data : doc)));
+      } else {
+        const response = await axios.post('/api/documents', documentData);
+        setDocuments([...documents, response.data]);
+      }
+      setFormOpen(false);
+      setSelectedDocument(null);
     } catch (error) {
-      console.error(error);
-      alert('Error uploading document.');
+      console.error('Error saving document:', error);
+      alert(`Error: ${error.response?.data?.message || 'Could not save document'}`);
     }
   };
 
-  const handleDelete = async (id) => {
-    await axios.delete(`/api/documents/${id}`);
-    fetchDocuments();
+  const deleteDocument = async (id) => {
+    try {
+      await axios.delete(`/api/documents/${id}`);
+      setDocuments(documents.filter(document => document._id !== id));
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      alert(`Error: ${error.response?.data?.message || 'Could not delete document'}`);
+    }
   };
 
-  const columns = [
-    { field: 'title', headerName: 'Title', width: 150 },
-    { field: 'case', headerName: 'Case', width: 150, valueGetter: (params) => params.row.case ? params.row.case.title : 'N/A' },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      width: 150,
-      renderCell: (params) => (
-        <Button onClick={() => handleDelete(params.id)} color="secondary" variant="contained">Delete</Button>
-      )
-    }
-  ];
+  const handleAddClick = () => {
+    setSelectedDocument(null);
+    setFormOpen(true);
+  };
+
+  const handleEditClick = (document) => {
+    setSelectedDocument(document);
+    setFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setFormOpen(false);
+    setSelectedDocument(null);
+  };
 
   return (
-    <div className="document-management">
+    <div>
       <h2>Document Management</h2>
-      <Button variant="contained" color="primary" onClick={handleOpen}>Upload Document</Button>
-      <DataGrid 
-        rows={documents} 
-        columns={columns} 
-        pageSize={5} 
-        autoHeight 
-        getRowId={(row) => row._id} 
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Upload Document</DialogTitle>
-        <DialogContent>
-          <TextField name="title" label="Title" fullWidth margin="dense" onChange={handleChange} />
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Case</InputLabel>
-            <Select name="caseId" value={formData.caseId} onChange={handleChange}>
-              {cases.map(caseItem => (
-                <MenuItem key={caseItem._id} value={caseItem._id}>{caseItem.title}</MenuItem>
+      <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleAddClick}>
+        Add New Document
+      </Button>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell>Case</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {documents.map((document) => (
+                <TableRow key={document._id}>
+                  <TableCell>{document.name}</TableCell>
+                  <TableCell>{document.type}</TableCell>
+                  <TableCell>{document.case.title}</TableCell>
+                  <TableCell>
+                    <IconButton color="primary" onClick={() => handleEditClick(document)}>
+                      <Edit />
+                    </IconButton>
+                    <IconButton color="secondary" onClick={() => deleteDocument(document._id)}>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
               ))}
-            </Select>
-          </FormControl>
-          <input type="file" onChange={handleFileChange} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">Cancel</Button>
-          <Button onClick={handleSubmit} color="primary">Save</Button>
-        </DialogActions>
-      </Dialog>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+      {formOpen && <DocumentForm document={selectedDocument} cases={cases} onSave={saveDocument} onClose={handleCloseForm} />}
     </div>
   );
 };

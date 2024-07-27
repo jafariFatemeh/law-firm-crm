@@ -1,15 +1,15 @@
 // src/pages/CaseManagement.js
 import React, { useState, useEffect } from 'react';
-import axios from '../services/axiosConfig';
-import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
-import './CaseManagement.css';
+import axios from 'axios';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
+import { Add, Edit, Delete } from '@mui/icons-material';
+import CaseForm from './CaseForm';
 
 const CaseManagement = () => {
   const [cases, setCases] = useState([]);
   const [clients, setClients] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({ title: '', description: '', status: '', client: '' });
+  const [selectedCase, setSelectedCase] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
     fetchCases();
@@ -17,89 +17,95 @@ const CaseManagement = () => {
   }, []);
 
   const fetchCases = async () => {
-    const response = await axios.get('/api/cases');
-    setCases(response.data);
+    const result = await axios.get('/api/cases');
+    setCases(result.data);
   };
 
   const fetchClients = async () => {
-    const response = await axios.get('/api/clients');
-    setClients(response.data);
+    const result = await axios.get('/api/clients');
+    setClients(result.data);
   };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSubmit = async () => {
-    await axios.post('/api/cases', formData);
-    fetchCases();
-    handleClose();
-  };
-
-  const handleDelete = async (id) => {
-    await axios.delete(`/api/cases/${id}`);
-    fetchCases();
-  };
-
-  const columns = [
-    { field: 'title', headerName: 'Title', width: 150 },
-    { field: 'description', headerName: 'Description', width: 250 },
-    { field: 'status', headerName: 'Status', width: 150 },
-    {
-      field: 'client',
-      headerName: 'Client',
-      width: 150,
-      valueGetter: (params) => params.row.client ? params.row.client.name : 'N/A'
-    },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      width: 150,
-      renderCell: (params) => (
-        <Button onClick={() => handleDelete(params.id)} color="secondary" variant="contained">Delete</Button>
-      )
+  const saveCase = async (caseData) => {
+    try {
+      if (selectedCase) {
+        const response = await axios.put(`/api/cases/${selectedCase._id}`, caseData);
+        setCases(cases.map(c => (c._id === selectedCase._id ? response.data : c)));
+      } else {
+        const response = await axios.post('/api/cases', caseData);
+        setCases([...cases, response.data]);
+      }
+      setFormOpen(false);
+      setSelectedCase(null);
+    } catch (error) {
+      console.error('Error saving case:', error);
+      alert(`Error: ${error.response?.data?.message || 'Could not save case'}`);
     }
-  ];
+  };
+
+  const deleteCase = async (id) => {
+    try {
+      await axios.delete(`/api/cases/${id}`);
+      setCases(cases.filter(caseItem => caseItem._id !== id));
+    } catch (error) {
+      console.error('Error deleting case:', error);
+      alert(`Error: ${error.response?.data?.message || 'Could not delete case'}`);
+    }
+  };
+
+  const handleAddClick = () => {
+    setSelectedCase(null);
+    setFormOpen(true);
+  };
+
+  const handleEditClick = (caseItem) => {
+    setSelectedCase(caseItem);
+    setFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setFormOpen(false);
+    setSelectedCase(null);
+  };
 
   return (
-    <div className="case-management">
+    <div>
       <h2>Case Management</h2>
-      <Button variant="contained" color="primary" onClick={handleOpen}>Add New Case</Button>
-      <DataGrid 
-        rows={cases} 
-        columns={columns} 
-        pageSize={5} 
-        autoHeight 
-        getRowId={(row) => row._id} 
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New Case</DialogTitle>
-        <DialogContent>
-          <TextField name="title" label="Title" fullWidth margin="dense" onChange={handleChange} />
-          <TextField name="description" label="Description" fullWidth margin="dense" onChange={handleChange} />
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Status</InputLabel>
-            <Select name="status" value={formData.status} onChange={handleChange}>
-              <MenuItem value="Open">Open</MenuItem>
-              <MenuItem value="Closed">Closed</MenuItem>
-              <MenuItem value="Pending">Pending</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Client</InputLabel>
-            <Select name="client" value={formData.client} onChange={handleChange}>
-              {clients.map(client => (
-                <MenuItem key={client._id} value={client._id}>{client.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">Cancel</Button>
-          <Button onClick={handleSubmit} color="primary">Save</Button>
-        </DialogActions>
-      </Dialog>
+      <Button variant="contained" color="primary" startIcon={<Add />} onClick={handleAddClick}>
+        Add New Case
+      </Button>
+      <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Client</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {cases.map((caseItem) => (
+              <TableRow key={caseItem._id}>
+                <TableCell>{caseItem.title}</TableCell>
+                <TableCell>{caseItem.description}</TableCell>
+                <TableCell>{caseItem.status}</TableCell>
+                <TableCell>{caseItem.client.name}</TableCell>
+                <TableCell>
+                  <IconButton color="primary" onClick={() => handleEditClick(caseItem)}>
+                    <Edit />
+                  </IconButton>
+                  <IconButton color="secondary" onClick={() => deleteCase(caseItem._id)}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {formOpen && <CaseForm caseItem={selectedCase} clients={clients} onSave={saveCase} onClose={handleCloseForm} />}
     </div>
   );
 };
