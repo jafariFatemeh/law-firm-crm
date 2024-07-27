@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
-import CommunicationForm from '../components/CommunicationForm';
+import CommunicationForm from '../pages/CommunicationForm';
 import './CommunicationManagement.css';
 
 const CommunicationManagement = () => {
