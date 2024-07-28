@@ -1,7 +1,7 @@
 // backend/routes/documents.js
 const express = require('express');
 const router = express.Router();
-const documentsController = require('../controllers/documentsController');
+const documentsController = require('../controllers/documentController');
 
 // Get all documents
 router.get('/', documentsController.getAllDocuments);
