@@ -1,54 +1,84 @@
 // backend/controllers/documentController.js
+// controllers/documentsController.js
 const Document = require('../models/Document');
 const multer = require('multer');
 const path = require('path');
 
-// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
-  },
+  }
 });
 
-exports.upload = multer({ storage });
+const upload = multer({ storage }).single('file');
 
-// Create new document
-exports.createDocument = async (req, res) => {
+const getAllDocuments = async (req, res) => {
   try {
-    const { title, caseId } = req.body;
-    const fileUrl = req.file.path;
-    if (!title || !caseId || !fileUrl) {
-      return res.status(400).json({ message: 'All fields are required' });
+    const documents = await Document.find().populate('case');
+    res.json(documents);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const createDocument = async (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(500).json({ message: err.message });
     }
-    const newDocument = new Document({ title, caseId, fileUrl });
-    await newDocument.save();
-    res.status(201).json(newDocument);
+    const { title, description, case: caseId } = req.body;
+    const filePath = req.file ? req.file.path : null;
+    const document = new Document({ title, description, case: caseId, filePath });
+    try {
+      const newDocument = await document.save();
+      res.status(201).json(newDocument);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+};
+
+const updateDocument = async (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(500).json({ message: err.message });
+    }
+    const { title, description, case: caseId } = req.body;
+    const filePath = req.file ? req.file.path : req.body.filePath;
+    try {
+      const updatedDocument = await Document.findByIdAndUpdate(
+        req.params.id,
+        { title, description, case: caseId, filePath },
+        { new: true }
+      ).populate('case');
+      if (!updatedDocument) {
+        return res.status(404).json({ message: 'Document not found' });
+      }
+      res.json(updatedDocument);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+};
+
+const deleteDocument = async (req, res) => {
+  try {
+    const deletedDocument = await Document.findByIdAndDelete(req.params.id);
+    if (!deletedDocument) {
+      return res.status(404).json({ message: 'Document not found' });
+    }
+    res.json({ message: 'Document deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get all documents for a specific case
-exports.getDocumentsByCase = async (req, res) => {
-  try {
-    const { caseId } = req.params;
-    const documents = await Document.find({ caseId });
-    res.status(200).json(documents);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// Delete document
-exports.deleteDocument = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Document.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Document deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+module.exports = {
+  getAllDocuments,
+  createDocument,
+  updateDocument,
+  deleteDocument
 };

@@ -1,10 +1,18 @@
 // backend/routes/documents.js
 const express = require('express');
-const { createDocument, getDocumentsByCase, deleteDocument, upload } = require('../controllers/documentController');
 const router = express.Router();
+const documentsController = require('../controllers/documentsController');
 
-router.post('/', upload.single('file'), createDocument);
-router.get('/case/:caseId', getDocumentsByCase);
-router.delete('/:id', deleteDocument);
+// Get all documents
+router.get('/', documentsController.getAllDocuments);
+
+// Create a new document
+router.post('/', documentsController.createDocument);
+
+// Update an existing document
+router.put('/:id', documentsController.updateDocument);
+
+// Delete a document
+router.delete('/:id', documentsController.deleteDocument);
 
 module.exports = router;
