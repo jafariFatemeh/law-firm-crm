@@ -1,39 +1,70 @@
 // backend/controllers/communicationController.js
+// controllers/communicationsController.js
 const Communication = require('../models/Communication');
 
-// Create new communication
-exports.createCommunication = async (req, res) => {
+const getAllCommunications = async (req, res) => {
   try {
-    const { caseId, type, content } = req.body;
-    if (!caseId || !type || !content) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
-    const newCommunication = new Communication({ caseId, type, content });
-    await newCommunication.save();
+    const communications = await Communication.find().populate('case');
+    res.json(communications);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const createCommunication = async (req, res) => {
+  const { title, content, case: caseId } = req.body;
+  
+  if (!title || !content || !caseId) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  const communication = new Communication({ title, content, case: caseId });
+
+  try {
+    const newCommunication = await communication.save();
     res.status(201).json(newCommunication);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
-// Get all communications for a specific case
-exports.getCommunicationsByCase = async (req, res) => {
+const updateCommunication = async (req, res) => {
+  const { title, content, case: caseId } = req.body;
+
+  if (!title || !content || !caseId) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
   try {
-    const { caseId } = req.params;
-    const communications = await Communication.find({ caseId });
-    res.status(200).json(communications);
+    const updatedCommunication = await Communication.findByIdAndUpdate(
+      req.params.id,
+      { title, content, case: caseId },
+      { new: true }
+    ).populate('case');
+    if (!updatedCommunication) {
+      return res.status(404).json({ message: 'Communication not found' });
+    }
+    res.json(updatedCommunication);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const deleteCommunication = async (req, res) => {
+  try {
+    const deletedCommunication = await Communication.findByIdAndDelete(req.params.id);
+    if (!deletedCommunication) {
+      return res.status(404).json({ message: 'Communication not found' });
+    }
+    res.json({ message: 'Communication deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Delete communication
-exports.deleteCommunication = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Communication.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Communication deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+module.exports = {
+  getAllCommunications,
+  createCommunication,
+  updateCommunication,
+  deleteCommunication
 };

@@ -1,28 +1,36 @@
 // src/pages/CommunicationTools.js
+// src/pages/CommunicationManagement.js
 import React, { useState, useEffect } from 'react';
 import axios from '../services/axiosConfig';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
-import { Add, Delete } from '@mui/icons-material';
+import { Add, Edit, Delete } from '@mui/icons-material';
 import CommunicationForm from './CommunicationForm';
 
-const CommunicationManagement = ({ caseId }) => {
+const CommunicationManagement = () => {
   const [communications, setCommunications] = useState([]);
+  const [selectedCommunication, setSelectedCommunication] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
     fetchCommunications();
-  }, [caseId]);
+  }, []);
 
   const fetchCommunications = async () => {
-    const result = await axios.get(`/api/communications/case/${caseId}`);
+    const result = await axios.get('/api/communications');
     setCommunications(result.data);
   };
 
-  const saveCommunication = async (data) => {
+  const saveCommunication = async (communicationData) => {
     try {
-      const response = await axios.post('/api/communications', data);
-      setCommunications([...communications, response.data]);
+      if (selectedCommunication) {
+        const response = await axios.put(`/api/communications/${selectedCommunication._id}`, communicationData);
+        setCommunications(communications.map(c => (c._id === selectedCommunication._id ? response.data : c)));
+      } else {
+        const response = await axios.post('/api/communications', communicationData);
+        setCommunications([...communications, response.data]);
+      }
       setFormOpen(false);
+      setSelectedCommunication(null);
     } catch (error) {
       console.error('Error saving communication:', error);
       alert(`Error: ${error.response?.data?.message || 'Could not save communication'}`);
@@ -32,7 +40,7 @@ const CommunicationManagement = ({ caseId }) => {
   const deleteCommunication = async (id) => {
     try {
       await axios.delete(`/api/communications/${id}`);
-      setCommunications(communications.filter(comm => comm._id !== id));
+      setCommunications(communications.filter(communication => communication._id !== id));
     } catch (error) {
       console.error('Error deleting communication:', error);
       alert(`Error: ${error.response?.data?.message || 'Could not delete communication'}`);
@@ -40,11 +48,18 @@ const CommunicationManagement = ({ caseId }) => {
   };
 
   const handleAddClick = () => {
+    setSelectedCommunication(null);
+    setFormOpen(true);
+  };
+
+  const handleEditClick = (communication) => {
+    setSelectedCommunication(communication);
     setFormOpen(true);
   };
 
   const handleCloseForm = () => {
     setFormOpen(false);
+    setSelectedCommunication(null);
   };
 
   return (
@@ -57,17 +72,22 @@ const CommunicationManagement = ({ caseId }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Type</TableCell>
+              <TableCell>Title</TableCell>
               <TableCell>Content</TableCell>
+              <TableCell>Case</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {communications.map((communication) => (
               <TableRow key={communication._id}>
-                <TableCell>{communication.type}</TableCell>
+                <TableCell>{communication.title}</TableCell>
                 <TableCell>{communication.content}</TableCell>
+                <TableCell>{communication.case.title}</TableCell>
                 <TableCell>
+                  <IconButton onClick={() => handleEditClick(communication)} color="primary">
+                    <Edit />
+                  </IconButton>
                   <IconButton onClick={() => deleteCommunication(communication._id)} color="secondary">
                     <Delete />
                   </IconButton>
@@ -77,7 +97,7 @@ const CommunicationManagement = ({ caseId }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {formOpen && <CommunicationForm caseId={caseId} onSave={saveCommunication} onClose={handleCloseForm} />}
+      {formOpen && <CommunicationForm communication={selectedCommunication} onSave={saveCommunication} onClose={handleCloseForm} />}
     </div>
   );
 };

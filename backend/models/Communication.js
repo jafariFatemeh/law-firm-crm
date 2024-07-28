@@ -1,10 +1,25 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const communicationSchema = new mongoose.Schema({
-  caseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Case', required: true },
-  type: { type: String, required: true },
-  content: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
+const communicationSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  case: {
+    type: Schema.Types.ObjectId,
+    ref: 'Case',
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('Communication', communicationSchema);
+const Communication = mongoose.model('Communication', communicationSchema);
+module.exports = Communication;
