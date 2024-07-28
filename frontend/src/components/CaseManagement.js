@@ -1,6 +1,6 @@
 // src/pages/CaseManagement.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import CaseForm from './CaseForm';
@@ -15,20 +15,8 @@ const CaseManagement = () => {
   }, []);
 
   const fetchCases = async () => {
-    try {
-      const result = await axios.get('/api/cases');
-      console.log(result.data); // Log the data to check its structure
-      if (Array.isArray(result.data)) {
-        setCases(result.data);
-      } else {
-        console.error('Data is not an array:', result.data);
-        // Handle unexpected data
-        setCases([]);
-      }
-    } catch (error) {
-      console.error('Error fetching cases:', error);
-      alert('Failed to fetch cases. Please try again later.');
-    }
+    const result = await axios.get('/api/cases');
+    setCases(result.data);
   };
 
   const saveCase = async (caseData) => {
@@ -44,17 +32,17 @@ const CaseManagement = () => {
       setSelectedCase(null);
     } catch (error) {
       console.error('Error saving case:', error);
-      alert('Error saving case.');
+      alert(`Error: ${error.response?.data?.message || 'Could not save case'}`);
     }
   };
 
   const deleteCase = async (id) => {
     try {
       await axios.delete(`/api/cases/${id}`);
-      setCases(cases.filter(c => c._id !== id));
+      setCases(cases.filter(caseItem => caseItem._id !== id));
     } catch (error) {
       console.error('Error deleting case:', error);
-      alert('Error deleting case.');
+      alert(`Error: ${error.response?.data?.message || 'Could not delete case'}`);
     }
   };
 
@@ -85,7 +73,8 @@ const CaseManagement = () => {
             <TableRow>
               <TableCell>Title</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>Client</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Assigned To</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -94,12 +83,13 @@ const CaseManagement = () => {
               <TableRow key={caseItem._id}>
                 <TableCell>{caseItem.title}</TableCell>
                 <TableCell>{caseItem.description}</TableCell>
-                <TableCell>{caseItem.client?.name || 'N/A'}</TableCell>
+                <TableCell>{caseItem.status}</TableCell>
+                <TableCell>{caseItem.assignedTo.name}</TableCell>
                 <TableCell>
-                  <IconButton color="primary" onClick={() => handleEditClick(caseItem)}>
+                  <IconButton onClick={() => handleEditClick(caseItem)} color="primary">
                     <Edit />
                   </IconButton>
-                  <IconButton color="secondary" onClick={() => deleteCase(caseItem._id)}>
+                  <IconButton onClick={() => deleteCase(caseItem._id)} color="secondary">
                     <Delete />
                   </IconButton>
                 </TableCell>

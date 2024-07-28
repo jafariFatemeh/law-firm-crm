@@ -1,12 +1,10 @@
 // backend/routes/communications.js
 const express = require('express');
+const { createCommunication, getCommunicationsByCase, deleteCommunication } = require('../controllers/communicationController');
 const router = express.Router();
-const communicationController = require('../controllers/communicationController');
 
-router.get('/', communicationController.getCommunications);
-router.get('/:id', communicationController.getCommunicationById);
-router.post('/', communicationController.createCommunication);
-router.put('/:id', communicationController.updateCommunication);
-router.delete('/:id', communicationController.deleteCommunication);
+router.post('/', createCommunication);
+router.get('/case/:caseId', getCommunicationsByCase);
+router.delete('/:id', deleteCommunication);
 
 module.exports = router;

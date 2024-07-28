@@ -1,56 +1,53 @@
 // backend/controllers/caseController.js
 const Case = require('../models/Case');
 
-// Get all cases
-exports.getCases = async (req, res) => {
-  try {
-    const cases = await Case.find().populate('client');
-    res.json(cases);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching cases', error });
-  }
-};
-
-// Get a single case by ID
-exports.getCaseById = async (req, res) => {
-  try {
-    const caseItem = await Case.findById(req.params.id).populate('client');
-    if (!caseItem) return res.status(404).json({ message: 'Case not found' });
-    res.json(caseItem);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching case', error });
-  }
-};
-
-// Create a new case
+// Create new case
 exports.createCase = async (req, res) => {
   try {
-    const newCase = new Case(req.body);
+    const { title, description, status, assignedTo } = req.body;
+    if (!title || !description || !status || !assignedTo) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+    const newCase = new Case({ title, description, status, assignedTo });
     await newCase.save();
     res.status(201).json(newCase);
   } catch (error) {
-    res.status(500).json({ message: 'Error creating case', error });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Update a case
+// Get all cases
+exports.getCases = async (req, res) => {
+  try {
+    const cases = await Case.find().populate('assignedTo');
+    res.status(200).json(cases);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Update case
 exports.updateCase = async (req, res) => {
   try {
-    const updatedCase = await Case.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedCase) return res.status(404).json({ message: 'Case not found' });
-    res.json(updatedCase);
+    const { id } = req.params;
+    const { title, description, status, assignedTo } = req.body;
+    if (!title || !description || !status || !assignedTo) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+    const updatedCase = await Case.findByIdAndUpdate(id, { title, description, status, assignedTo }, { new: true });
+    res.status(200).json(updatedCase);
   } catch (error) {
-    res.status(500).json({ message: 'Error updating case', error });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Delete a case
+// Delete case
 exports.deleteCase = async (req, res) => {
   try {
-    const deletedCase = await Case.findByIdAndDelete(req.params.id);
-    if (!deletedCase) return res.status(404).json({ message: 'Case not found' });
-    res.json({ message: 'Case deleted successfully' });
+    const { id } = req.params;
+    await Case.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Case deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting case', error });
+    res.status(500).json({ message: error.message });
   }
 };

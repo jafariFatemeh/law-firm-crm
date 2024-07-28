@@ -1,71 +1,52 @@
 // src/pages/DocumentManagement.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
 import { Add, Delete } from '@mui/icons-material';
 import DocumentForm from './DocumentForm';
 
-const DocumentManagement = () => {
+const DocumentManagement = ({ caseId }) => {
   const [documents, setDocuments] = useState([]);
-  const [selectedDocument, setSelectedDocument] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
     fetchDocuments();
-  }, []);
+  }, [caseId]);
 
   const fetchDocuments = async () => {
-    try {
-      const result = await axios.get('/api/documents');
-      console.log(result.data); // Log the data to check its structure
-      if (Array.isArray(result.data)) {
-        setDocuments(result.data);
-      } else {
-        console.error('Data is not an array:', result.data);
-        // Handle unexpected data
-        setDocuments([]);
-      }
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-      alert('Failed to fetch documents. Please try again later.');
-    }
+    const result = await axios.get(`/api/documents/case/${caseId}`);
+    setDocuments(result.data);
   };
 
-  const saveDocument = async (documentData) => {
+  const saveDocument = async (formData) => {
     try {
-      if (selectedDocument) {
-        const response = await axios.put(`/api/documents/${selectedDocument._id}`, documentData);
-        setDocuments(documents.map(d => (d._id === selectedDocument._id ? response.data : d)));
-      } else {
-        const response = await axios.post('/api/documents', documentData);
-        setDocuments([...documents, response.data]);
-      }
+      const response = await axios.post('/api/documents', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setDocuments([...documents, response.data]);
       setFormOpen(false);
-      setSelectedDocument(null);
     } catch (error) {
       console.error('Error saving document:', error);
-      alert('Error saving document.');
+      alert(`Error: ${error.response?.data?.message || 'Could not save document'}`);
     }
   };
 
   const deleteDocument = async (id) => {
     try {
       await axios.delete(`/api/documents/${id}`);
-      setDocuments(documents.filter(d => d._id !== id));
+      setDocuments(documents.filter(doc => doc._id !== id));
     } catch (error) {
       console.error('Error deleting document:', error);
-      alert('Error deleting document.');
+      alert(`Error: ${error.response?.data?.message || 'Could not delete document'}`);
     }
   };
 
   const handleAddClick = () => {
-    setSelectedDocument(null);
     setFormOpen(true);
   };
 
   const handleCloseForm = () => {
     setFormOpen(false);
-    setSelectedDocument(null);
   };
 
   return (
@@ -79,8 +60,7 @@ const DocumentManagement = () => {
           <TableHead>
             <TableRow>
               <TableCell>Title</TableCell>
-              <TableCell>File</TableCell>
-              <TableCell>Case</TableCell>
+              <TableCell>File URL</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -89,11 +69,12 @@ const DocumentManagement = () => {
               <TableRow key={document._id}>
                 <TableCell>{document.title}</TableCell>
                 <TableCell>
-                  <a href={document.fileUrl} target="_blank" rel="noopener noreferrer">View</a>
+                  <a href={`/${document.fileUrl}`} target="_blank" rel="noopener noreferrer">
+                    View File
+                  </a>
                 </TableCell>
-                <TableCell>{document.case?.title || 'N/A'}</TableCell>
                 <TableCell>
-                  <IconButton color="secondary" onClick={() => deleteDocument(document._id)}>
+                  <IconButton onClick={() => deleteDocument(document._id)} color="secondary">
                     <Delete />
                   </IconButton>
                 </TableCell>
@@ -102,7 +83,7 @@ const DocumentManagement = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      {formOpen && <DocumentForm document={selectedDocument} onSave={saveDocument} onClose={handleCloseForm} />}
+      {formOpen && <DocumentForm caseId={caseId} onSave={saveDocument} onClose={handleCloseForm} />}
     </div>
   );
 };

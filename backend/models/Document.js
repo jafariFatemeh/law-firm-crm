@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 
 const documentSchema = new mongoose.Schema({
   title: { type: String, required: true },
+  caseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Case', required: true },
   fileUrl: { type: String, required: true },
-  case: { type: mongoose.Schema.Types.ObjectId, ref: 'Case' },
-  // Additional fields as necessary
-}, { timestamps: true });
+  createdAt: { type: Date, default: Date.now },
+});
 
 module.exports = mongoose.model('Document', documentSchema);
