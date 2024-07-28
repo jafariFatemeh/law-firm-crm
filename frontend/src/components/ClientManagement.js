@@ -1,14 +1,14 @@
 // src/pages/ClientManagement.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import ClientForm from './ClientForm';
 
 const ClientManagement = () => {
   const [clients, setClients] = useState([]);
-  const [selectedClient, setSelectedClient] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [selectedClient, setSelectedClient] = useState(null);
 
   useEffect(() => {
     fetchClients();
@@ -19,13 +19,14 @@ const ClientManagement = () => {
     setClients(result.data);
   };
 
-  const saveClient = async (client) => {
+  const saveClient = async (clientData) => {
     try {
+      let response;
       if (selectedClient) {
-        const response = await axios.put(`/api/clients/${selectedClient._id}`, client);
-        setClients(clients.map(c => (c._id === selectedClient._id ? response.data : c)));
+        response = await axios.put(`/api/clients/${selectedClient._id}`, clientData);
+        setClients(clients.map(client => client._id === selectedClient._id ? response.data : client));
       } else {
-        const response = await axios.post('/api/clients', client);
+        response = await axios.post('/api/clients', clientData);
         setClients([...clients, response.data]);
       }
       setFormOpen(false);
@@ -72,10 +73,9 @@ const ClientManagement = () => {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Contact Info</TableCell>
-              <TableCell>Address</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
+              <TableCell>Address</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -83,15 +83,14 @@ const ClientManagement = () => {
             {clients.map((client) => (
               <TableRow key={client._id}>
                 <TableCell>{client.name}</TableCell>
-                <TableCell>{client.contactInfo}</TableCell>
-                <TableCell>{client.address}</TableCell>
                 <TableCell>{client.email}</TableCell>
                 <TableCell>{client.phone}</TableCell>
+                <TableCell>{client.address}</TableCell>
                 <TableCell>
-                  <IconButton color="primary" onClick={() => handleEditClick(client)}>
+                  <IconButton onClick={() => handleEditClick(client)} color="primary">
                     <Edit />
                   </IconButton>
-                  <IconButton color="secondary" onClick={() => deleteClient(client._id)}>
+                  <IconButton onClick={() => deleteClient(client._id)} color="secondary">
                     <Delete />
                   </IconButton>
                 </TableCell>
