@@ -15,8 +15,12 @@ const CaseManagement = () => {
   }, []);
 
   const fetchCases = async () => {
-    const result = await axios.get('/api/cases');
-    setCases(result.data);
+    try {
+      const result = await axios.get('/api/cases');
+      setCases(result.data);
+    } catch (error) {
+      console.error('Error fetching cases:', error);
+    }
   };
 
   const saveCase = async (caseData) => {
@@ -84,7 +88,7 @@ const CaseManagement = () => {
                 <TableCell>{caseItem.title}</TableCell>
                 <TableCell>{caseItem.description}</TableCell>
                 <TableCell>{caseItem.status}</TableCell>
-                <TableCell>{caseItem.assignedTo.name}</TableCell>
+                <TableCell>{caseItem.assignedTo ? caseItem.assignedTo.name : 'Unassigned'}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleEditClick(caseItem)} color="primary">
                     <Edit />
