@@ -4,7 +4,7 @@ import Dashboard from './components/Dashboard';
 import CaseManagement from './components/CaseManagement';
 import ClientManagement from './components/ClientManagement';
 import DocumentManagement from './components/DocumentManagement';
-import CommunicationManagement from './pages/CommunicationManagement';
+import CommunicationManagement from './components/CommunicationManagement';
 import Login from './components/Login';
 import RegistrationForm from './components/RegistrationForm';
 import './App.css';
