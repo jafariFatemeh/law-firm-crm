@@ -1,18 +1,22 @@
 // backend/routes/documents.js
 const express = require('express');
+const multer = require('multer');
+const { analyzeContract } = require('../controllers/documentController');
 const router = express.Router();
-const documentsController = require('../controllers/documentController');
 
-// Get all documents
-router.get('/', documentsController.getAllDocuments);
+// Multer setup for file upload
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
 
-// Create a new document
-router.post('/', documentsController.createDocument);
+const upload = multer({ storage });
 
-// Update an existing document
-router.put('/:id', documentsController.updateDocument);
-
-// Delete a document
-router.delete('/:id', documentsController.deleteDocument);
+// Endpoint for uploading and analyzing contract
+router.post('/upload', upload.single('document'), analyzeContract);
 
 module.exports = router;
