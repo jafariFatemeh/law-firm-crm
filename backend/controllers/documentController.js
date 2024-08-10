@@ -1,7 +1,7 @@
 // backend/controllers/documentController.js
 const fs = require('fs');
 const path = require('path');
-const { analyzeText } = require('frontend/src/services/nlpService');
+const { analyzeText } = require('../services/nlpService');
 
 exports.analyzeContract = async (req, res) => {
   try {
