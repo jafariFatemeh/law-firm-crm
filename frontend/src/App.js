@@ -5,6 +5,7 @@ import CaseManagement from './components/CaseManagement';
 import ClientManagement from './components/ClientManagement';
 import DocumentManagement from './components/DocumentManagement';
 import CommunicationManagement from './components/CommunicationManagement';
+import LegalResearch from './components/LegalResearch';
 import Login from './components/Login';
 import RegistrationForm from './components/RegistrationForm';
 import './App.css';
@@ -66,6 +67,9 @@ const App = () => {
               </Route>
               <Route path="/communications">
                 {isAuthenticated ? <CommunicationManagement /> : <Redirect to="/login" />}
+              </Route>
+              <Route path="/legal-research">
+                {isAuthenticated ? <LegalResearch /> : <Redirect to="/login" />}
               </Route>
               <Redirect from="/" to="/login" />
             </Switch>
